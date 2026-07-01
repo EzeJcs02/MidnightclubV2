@@ -1,0 +1,103 @@
+/* 
+  Midnight Club Online - Utilities
+  Helper classes to remove inline styles
+*/
+
+/* --- SPACING --- */
+.pt-0 { padding-top: 0 !important; }
+.pt-60 { padding-top: 60px; }
+.pt-80 { padding-top: 80px; } /* members.html */
+.pt-120 { padding-top: 120px; } /* accesos.html */
+
+.pb-0 { padding-bottom: 0 !important; }
+.pb-20 { padding-bottom: 20px; }
+
+.mt-0 { margin-top: 0 !important; }
+.mt-auto { margin-top: auto; }
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-30 { margin-bottom: 30px; }
+.mb-40 { margin-bottom: 40px; }
+
+.ml-10 { margin-left: 10px; }
+
+.gap-12 { gap: 12px; }
+
+/* --- TYPOGRAPHY --- */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-uppercase { text-transform: uppercase; }
+.text-underline { text-decoration: underline; }
+
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+
+.text-white { color: #ffffff; }
+.text-grey { color: #aaaaaa; }
+.text-red { color: var(--mc-red); }
+
+/* --- LAYOUT --- */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.flex-grow { flex: 1; }
+
+.block { display: block; }
+.hidden { display: none; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.w-20 { width: 20px; }
+.h-20 { height: 20px; }
+
+/* --- OPACITY (Hero backgrounds) --- */
+.opacity-15 { opacity: 0.15; }
+.opacity-20 { opacity: 0.2; }
+.opacity-25 { opacity: 0.25; }
+
+/* Text Utils */
+.text-xs { font-size: 12px; }
+.text-sm { font-size: 14px; }
+.text-grey { color: #aaaaaa; }
+.uppercase { text-transform: uppercase; }
+.leading-tight { line-height: 1.4; }
+.text-stroke-red { -webkit-text-stroke: 1px var(--mc-red); }
+
+/* Spacing Utils */
+.mb-2 { margin-bottom: 2px; }
+.mb-20 { margin-bottom: 20px; }
+
+/* Form Utils */
+.accent-red { accent-color: var(--mc-red); }
+
+/* Cursor Utils */
+.pointer { cursor: pointer; }
+.opacity-30 { opacity: 0.3; }
+.pt-100 { padding-top: 100px; }
+.opacity-70 { opacity: 0.7; }
+.text-13 { font-size: 13px; }
+.break-all { word-break: break-all; }
+.pb-40 { padding-bottom: 40px; }
+
+/* New Utils for Inline Style Cleanup */
+.text-3xl { font-size: 32px; }
+.text-2xl { font-size: 24px; }
+.no-underline { text-decoration: none; }
+.min-h-screen { min-height: 100vh; }
+.mb-10 { margin-bottom: 10px; }
+.mt-40 { margin-top: 40px; }
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.w-auto { width: auto; }
+.leading-relaxed { line-height: 1.6; }
+.opacity-70 { opacity: 0.7; }
+.text-13 { font-size: 13px; }
+.break-all { word-break: break-all; }

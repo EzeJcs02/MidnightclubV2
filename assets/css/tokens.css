@@ -1,0 +1,54 @@
+/* 
+  Midnight Club Online - Design Tokens 
+  "Nightlife Aesthetic" + Legacy Compatibility
+*/
+
+:root {
+  /* --- Legacy Compatibility Variables --- */
+  --mc-red: #f6f2ea;
+  --mc-red-dark: #9b968d;
+  --mc-bg: #050505;
+  --mc-text: #f7f4ee;
+
+  /* --- Palette: Nightlife Base (Updated to match Legacy) --- */
+  --bg-body: #050505;       /* Legacy Black, refined */
+  --bg-surface: #0c0c0c;    
+  --bg-glass: rgba(18, 18, 18, 0.65);
+  
+  /* --- Palette: Neons & Accents --- */
+  --primary: #f6f2ea;       /* Warm white */
+  --primary-glow: rgba(255, 255, 255, 0.28);
+  --text-primary: #f7f4ee;
+  --text-muted: #9b968d;
+  --secondary: #d6d1c7;     
+  --accent: #e4d2a8;        /* Champagne accent */
+  --accent-soft: rgba(228, 210, 168, 0.25);
+
+  /* --- Typography --- */
+  --font-logo: 'Cinzel', 'Outfit', serif;
+  --font-display: 'Outfit', 'Manrope', sans-serif;
+  --font-body: 'Manrope', sans-serif; 
+
+  /* --- Spacing System (4px grid) --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* --- Effects --- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.28);
+  --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.16);
+  --glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --blur-glass: 12px;
+  --trans-fast: 180ms ease;
+  --trans-smooth: 360ms ease;
+}

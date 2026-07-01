@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Accesos y Entradas - Midnight Club Salta Argentina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="description"
+    content="Reserva tu acceso a Midnight Club. Entradas para eventos exclusivos, accesos VIP y membresías en Salta Argentina." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://midnightclub.com.ar/accesos" />
+
+  <meta property="og:title" content="Accesos - Midnight Club Salta Argentina" />
+  <meta property="og:description" content="Reserva tu entrada para la mejor experiencia nocturna." />
+  <meta property="og:url" content="https://midnightclub.com.ar/accesos.html" />
+  <meta property="og:image" content="https://midnightclub.com.ar/assets/images/hero.jpg" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Core Layout CSS -->
+  <link rel="stylesheet" href="assets/css/tokens.css?v=rebrand2">
+  <link rel="stylesheet" href="assets/css/base.css?v=rebrand2">
+  <link rel="stylesheet" href="assets/css/components.css?v=rebrand2">
+  <link rel="stylesheet" href="assets/css/utils.css?v=rebrand2">
+  <link rel="stylesheet" href="assets/css/layout.css?v=rebrand3">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="mc-body pb-0" style="background-color: transparent; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden;">
+  <div class="mc-global-media-bg">
+    <video autoplay loop muted playsinline>
+      <source src="assets/videos/bg.mp4" type="video/mp4">
+    </video>
+    <div class="mc-global-media-overlay"></div>
+  </div>
+
+  <header class="top-app-bar">
+    <div class="left">
+      <span class="material-symbols-outlined">menu</span>
+
+    </div>
+    <div class="logo">MIDNIGHT CLUB</div>
+  </header>
+
+  <main class="editorial-main">
+    <nav class="editorial-nav">
+      <!-- Los IDs son requeridos por assets/js/accesos.js para inyectar datos desde Supabase -->
+      <a id="card_0000" href="#" target="_blank" class="editorial-nav-link hidden" style="display: none;">
+        <span class="nav-meta">01 // ACCESS</span>
+        <h2 id="title_0000" class="nav-title">--</h2>
+        <div class="mc-item-details nav-meta" style="margin-top: 1rem; opacity: 0.8; letter-spacing: 0.1em; color: #C6C6C6;"></div>
+      </a>
+
+      <a id="card_plus" href="#" target="_blank" class="editorial-nav-link hidden" style="display: none;">
+        <span class="nav-meta">02 // ACCESS</span>
+        <h2 id="title_plus" class="nav-title">--</h2>
+        <div class="mc-item-details nav-meta" style="margin-top: 1rem; opacity: 0.8; letter-spacing: 0.1em; color: #C6C6C6;"></div>
+      </a>
+
+      <a id="card_extra" href="#" target="_blank" class="editorial-nav-link hidden" style="display: none;">
+        <span class="nav-meta">03 // EXTRA</span>
+        <h2 id="title_extra" class="nav-title">--</h2>
+        <div class="mc-item-details nav-meta" style="margin-top: 1rem; opacity: 0.8; letter-spacing: 0.1em; color: #C6C6C6;"></div>
+      </a>
+
+      <!-- Fallback / No Member Option -->
+      <a href="members.html" class="editorial-nav-link">
+        <span class="nav-meta">04 // MEMBERSHIP</span>
+        <h2 class="nav-title" style="font-size: clamp(2rem, 5vw, 4rem);">SOLICITAR ID</h2>
+      </a>
+    </nav>
+  </main>
+
+  <footer class="editorial-footer">
+    <div class="footer-meta">
+      <span>MC-SS26 ©</span>
+      <span class="internal">ACCESS SELECTION // INTERNAL USE</span>
+    </div>
+  </footer>
+
+  <div class="vertical-rail">
+    <div class="vertical-rail-text">STRUCTURAL NOIR // SPRING SUMMER 2026 // TICKETS</div>
+  </div>
+
+  <div id="mc-login-gate-container"></div>
+
+  <script type="module" src="assets/js/accesos.js?v=2"></script>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+/* 
+  Midnight Club Online - Base Styles 
+  Legacy Reset + Typography Defaults
+*/
+
+/* =========================================
+   RESET Y BASE (from Legacy)
+   ========================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { background-color: #000000; }
+html, body { margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--mc-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom)); 
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.01em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--trans-fast), opacity var(--trans-fast);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: #fff;
+}

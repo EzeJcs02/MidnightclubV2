@@ -1,0 +1,22 @@
+{
+  "name": "midnight-club-online",
+  "version": "1.0.0",
+  "description": "Midnight Club - Club Privado Salta Argentina",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "build:css": "node build.js --css-only",
+    "build:js": "node build.js --js-only",
+    "watch": "node build.js --watch",
+    "deploy:functions": "cd supabase && supabase functions deploy auth-member"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  }
+}

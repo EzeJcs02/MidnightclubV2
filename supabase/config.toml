@@ -1,0 +1,15 @@
+# Supabase Configuration for Midnight Club Online
+# See: https://supabase.com/docs/guides/cli/config
+
+project_id = "iyknbgmcnbpvalvsjxjz"
+
+[api]
+enabled = true
+
+[auth]
+enabled = true
+
+[functions]
+# Edge functions configuration
+[functions.auth-member]
+verify_jwt = false  # We handle our own JWT for members
