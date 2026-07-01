@@ -1,7 +1,6 @@
 # Supabase Configuration for Midnight Club Online
 # See: https://supabase.com/docs/guides/cli/config
-
-project_id = "iyknbgmcnbpvalvsjxjz"
+project_id = "tiaclyamzvcnyqwdcyen"
 
 [api]
 enabled = true

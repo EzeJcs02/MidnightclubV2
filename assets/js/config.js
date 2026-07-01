@@ -5,10 +5,10 @@
 
 const CONFIG = {
     SUPABASE: {
-        URL: 'https://iyknbgmcnbpvalvsjxjz.supabase.co',
-        ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5a25iZ21jbmJwdmFsdnNqeGp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNTc4MTEsImV4cCI6MjA4MzkzMzgxMX0.n3aFby5YOMZbyqwsWZPlSJuf_KzRB6woja70divY32A',
+        URL: 'https://tiaclyamzvcnyqwdcyen.supabase.co',
+        ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpYWNseWFtenZjbnlxd2RjeWVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MzI4MjYsImV4cCI6MjA5ODUwODgyNn0.GyYGY7c5st9JlMrFGf-N8ho5eXD1RKtcT2YL-IlMIOs',
         // Edge Function for secure member authentication
-        AUTH_FUNCTION: 'https://iyknbgmcnbpvalvsjxjz.supabase.co/functions/v1/auth-member'
+        AUTH_FUNCTION: 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/auth-member'
     },
     // EMAILJS: Removed - email now sent from backend via Resend
     ASSETS: {
