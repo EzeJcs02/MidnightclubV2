@@ -10,7 +10,9 @@ const CONFIG = {
         // Edge Function for secure member authentication
         AUTH_FUNCTION: 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/auth-member',
         // Edge Function for member tickets
-        TICKETS_FUNCTION: 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/tickets-api'
+        TICKETS_FUNCTION: 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/tickets-api',
+        // Edge Function for admin operations
+        ADMIN_FUNCTION: 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/admin-api'
     },
     ASSETS: {
         DEFAULT_HERO: 'assets/images/hero_bg.jpg'
