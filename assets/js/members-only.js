@@ -261,7 +261,7 @@ function setupChangePassword() {
         if(result.success) {
           alert("CONTRASEÑA ACTUALIZADA - INGRESA NUEVAMENTE");
           clearSession();
-          window.location.href = 'index';
+          window.location.href = 'index.html';
         } else {
           alert(result.error || "ERROR AL ACTUALIZAR");
           btnSavePass.innerHTML = 'ACTUALIZAR';
@@ -282,7 +282,7 @@ function setupLogout() {
     btn.addEventListener('click', () => {
       if(confirm("¿CERRAR SESIÓN?")) {
         clearSession();
-        window.location.href = 'index';
+        window.location.href = 'index.html';
       }
     });
 }
