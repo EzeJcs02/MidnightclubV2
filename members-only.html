@@ -57,6 +57,18 @@
       <div id="memberID" class="member-id">ID: MC-XXXX</div>
     </div>
 
+    <div class="mc-page-title">MIS ENTRADAS</div>
+    <div id="eventsContainer" class="w-full flex flex-col gap-4 mb-10 text-center">
+       <span class="loader" style="display:inline-block; margin: 2rem auto;"></span>
+    </div>
+
+    <!-- Modal for QR -->
+    <div id="qrModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; align-items:center; justify-content:center; padding: 2rem;">
+      <h2 id="qrEventTitle" style="margin-bottom: 1rem; color: #fff; font-weight: bold; text-align: center; text-transform: uppercase;"></h2>
+      <div id="qrCodeWrapper" style="background: white; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;"></div>
+      <button id="qrModalClose" class="mc-gate-btn" style="max-width: 200px;">CERRAR</button>
+    </div>
+
     <div class="mc-page-title">BENEFICIOS ACTIVOS</div>
 
 

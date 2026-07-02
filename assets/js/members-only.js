@@ -86,7 +86,137 @@ function initDashboard() {
       'passline_members__priority_pass': 'card_mem_plus',
       'passline_members_only__vip': 'card_mem_vip'
     });
+
+    // CARGAR ENTRADAS (NUEVO)
+    loadTickets();
 }
+
+// === TICKET LOGIC ===
+async function loadTickets() {
+  const container = document.getElementById('eventsContainer');
+  if(!container) return;
+
+  try {
+    const res = await fetch(CONFIG.SUPABASE.TICKETS_FUNCTION, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list_events', token: getToken() })
+    });
+    
+    const data = await res.json();
+    
+    if(!data.success) {
+      container.innerHTML = `<div style="color:var(--mc-red)">${data.error || 'ERROR CARGANDO EVENTOS'}</div>`;
+      return;
+    }
+
+    const { events, tickets } = data;
+    
+    if(!events || events.length === 0) {
+      container.innerHTML = `<div style="opacity:0.6; font-size: 0.9rem;">No hay eventos disponibles en este momento.</div>`;
+      return;
+    }
+
+    container.innerHTML = ''; // Limpiar loader
+
+    events.forEach(ev => {
+      // Filtrar tickets de este evento para el usuario
+      const evTickets = tickets.filter(t => t.event_id === ev.id);
+      const hasTicket = evTickets.length > 0;
+
+      const card = document.createElement('div');
+      card.className = 'mc-item-row';
+      card.style.display = 'flex';
+      card.style.flexDirection = 'column';
+      card.style.alignItems = 'center';
+      card.style.textAlign = 'center';
+
+      const title = document.createElement('h2');
+      title.className = 'mc-item-title';
+      title.textContent = ev.title;
+      
+      const dateStr = new Date(ev.event_date).toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
+      const desc = document.createElement('div');
+      desc.className = 'mc-item-details';
+      desc.textContent = `${dateStr} | ${ev.description || 'EVENTO EXCLUSIVO'}`;
+
+      const btnWrap = document.createElement('div');
+      btnWrap.style.marginTop = '1rem';
+
+      if (hasTicket) {
+        const ticket = evTickets[0];
+        const btn = document.createElement('button');
+        btn.className = 'mc-gate-btn';
+        btn.textContent = 'VER QR';
+        btn.style.width = '200px';
+        btn.onclick = () => showQR(ticket.qr_code, ev.title);
+        btnWrap.appendChild(btn);
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'mc-gate-btn';
+        btn.textContent = 'SACAR ENTRADA';
+        btn.style.width = '200px';
+        btn.style.background = 'transparent';
+        btn.style.border = '1px solid #fff';
+        btn.style.color = '#fff';
+        
+        btn.onclick = async () => {
+          btn.innerHTML = '<span class="loader" style="display:inline-block"></span>';
+          try {
+            const tkRes = await fetch(CONFIG.SUPABASE.TICKETS_FUNCTION, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'generate_ticket', token: getToken(), event_id: ev.id })
+            });
+            const tkData = await tkRes.json();
+            if(tkData.success) {
+              loadTickets(); // Recargar para mostrar "VER QR"
+            } else {
+              alert(tkData.error || "Error al sacar entrada");
+              btn.innerHTML = 'SACAR ENTRADA';
+            }
+          } catch(e) {
+            alert("Error de conexión");
+            btn.innerHTML = 'SACAR ENTRADA';
+          }
+        };
+        btnWrap.appendChild(btn);
+      }
+
+      card.appendChild(title);
+      card.appendChild(desc);
+      card.appendChild(btnWrap);
+      container.appendChild(card);
+    });
+
+  } catch(err) {
+    container.innerHTML = `<div style="color:var(--mc-red)">ERROR DE CONEXIÓN</div>`;
+  }
+}
+
+function showQR(qrString, title) {
+  const modal = document.getElementById('qrModal');
+  const wrapper = document.getElementById('qrCodeWrapper');
+  document.getElementById('qrEventTitle').textContent = title;
+  
+  wrapper.innerHTML = '';
+  // Generar el QR
+  new QRCode(wrapper, {
+    text: qrString,
+    width: 256,
+    height: 256,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+
+  modal.style.display = 'flex';
+}
+
+document.getElementById('qrModalClose')?.addEventListener('click', () => {
+  document.getElementById('qrModal').style.display = 'none';
+});
+
 
 
 // === PASSWORD CHANGE LOGIC ===
