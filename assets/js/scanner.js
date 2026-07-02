@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Detener escaner temporalmente
     if (html5QrcodeScanner) {
-      html5QrcodeScanner.pause();
+      try { html5QrcodeScanner.pause(true); } catch(e) {}
     }
     
     validateCode(decodedText);
@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 3. Manual Entry Logic ---
   btnManual.addEventListener('click', () => {
-    const code = manualCode.value.trim();
+    const code = manualCode.value.trim().toUpperCase();
     if (code) {
       if (html5QrcodeScanner) {
-        html5QrcodeScanner.pause();
+        try { html5QrcodeScanner.pause(true); } catch(e) {}
       }
       validateCode(code);
     }
