@@ -3,21 +3,9 @@ import CONFIG from './config.js';
 document.addEventListener('DOMContentLoaded', () => {
   const loginScreen = document.getElementById('loginScreen');
   const dashboardScreen = document.getElementById('dashboardScreen');
-  
   const adminPass = document.getElementById('adminPass');
   const btnLogin = document.getElementById('btnLogin');
   const btnLogout = document.getElementById('btnLogout');
-  
-  const statMembers = document.getElementById('statMembers');
-  const statValid = document.getElementById('statValid');
-  const statUsed = document.getElementById('statUsed');
-  
-  const eventsTableBody = document.getElementById('eventsTableBody');
-  const btnOpenNewEvent = document.getElementById('btnOpenNewEvent');
-  
-  const newEventModal = document.getElementById('newEventModal');
-  const btnCancelEvent = document.getElementById('btnCancelEvent');
-  const btnSaveEvent = document.getElementById('btnSaveEvent');
 
   let adminToken = localStorage.getItem('mc_admin_token') || null;
 
@@ -29,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dashboardScreen.style.display = 'none';
   }
 
-  // --- 1. LOGIN ---
+  // --- LOGIN LOGIC ---
   btnLogin.addEventListener('click', async () => {
     const password = adminPass.value;
     btnLogin.innerHTML = 'VERIFICANDO...';
@@ -47,27 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         alert(data.error || 'Acceso denegado');
       }
-    } catch(e) {
-      alert('Error de conexión');
-    }
-    btnLogin.innerHTML = 'INGRESAR AL PANEL';
+    } catch(e) { alert('Error de conexión'); }
+    btnLogin.innerHTML = 'INGRESAR';
   });
 
   btnLogout.addEventListener('click', () => {
     adminToken = null;
     localStorage.removeItem('mc_admin_token');
-    loginScreen.style.display = 'flex';
-    dashboardScreen.style.display = 'none';
-    adminPass.value = '';
+    location.reload();
   });
-
-  // --- 2. DASHBOARD ---
-  async function showDashboard() {
-    loginScreen.style.display = 'none';
-    dashboardScreen.style.display = 'block';
-    loadStats();
-    loadEvents();
-  }
 
   async function adminFetch(action, payload = {}) {
     const res = await fetch(CONFIG.SUPABASE.ADMIN_FUNCTION, {
@@ -77,113 +53,200 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const data = await res.json();
     if (!data.success && data.error && data.error.includes('denegado')) {
-      btnLogout.click(); // Expired token
+      btnLogout.click(); 
       throw new Error("Token expired");
     }
     return data;
   }
 
-  async function loadStats() {
+  // --- TABS LOGIC ---
+  const navLinks = document.querySelectorAll('.mc-nav-link');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      navLinks.forEach(l => l.classList.remove('active'));
+      tabPanes.forEach(p => p.classList.remove('active'));
+      
+      link.classList.add('active');
+      const target = link.getAttribute('data-target');
+      document.getElementById(target).classList.add('active');
+
+      if (target === 'tab-dashboard') loadDashboard();
+      if (target === 'tab-eventos') loadEvents();
+      if (target === 'tab-members') loadMembers();
+      if (target === 'tab-carta') loadCarta();
+    });
+  });
+
+  function showDashboard() {
+    loginScreen.style.display = 'none';
+    dashboardScreen.style.display = 'block';
+    loadDashboard();
+  }
+
+  // --- DASHBOARD ---
+  async function loadDashboard() {
     try {
       const data = await adminFetch('get_stats');
       if (data.success) {
-        statMembers.textContent = data.stats.members;
-        statValid.textContent = data.stats.validTickets;
-        statUsed.textContent = data.stats.usedTickets;
+        document.getElementById('statMembers').textContent = data.stats.members;
+        document.getElementById('statValid').textContent = data.stats.validTickets;
+        document.getElementById('statUsed').textContent = data.stats.usedTickets;
+        document.getElementById('statCarta').textContent = data.stats.menuItems;
       }
-    } catch(e) { console.error("Error loading stats", e); }
+    } catch(e) { console.error(e); }
   }
+
+  // --- EVENTOS ---
+  const eventsTableBody = document.getElementById('eventsTableBody');
+  const eventModal = document.getElementById('eventModal');
+  const btnSaveEvent = document.getElementById('btnSaveEvent');
+  const evId = document.getElementById('evId');
 
   async function loadEvents() {
-    try {
-      eventsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando eventos...</td></tr>';
-      const data = await adminFetch('list_events');
-      if (data.success) {
-        renderEvents(data.events);
-      }
-    } catch(e) { console.error("Error loading events", e); }
+    eventsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
+    const data = await adminFetch('list_events');
+    if (data.success) {
+      eventsTableBody.innerHTML = '';
+      data.events.forEach(ev => {
+        const tr = document.createElement('tr');
+        const dateStr = new Date(ev.event_date).toLocaleString('es-AR');
+        tr.innerHTML = `
+          <td><strong>${ev.title}</strong><br><small style="color:#888">${ev.description || ''}</small></td>
+          <td>${dateStr}</td>
+          <td>${ev.max_tickets_per_member}</td>
+          <td><span class="badge ${ev.is_active ? 'active' : 'rejected'}">${ev.is_active ? 'ACTIVO' : 'OCULTO'}</span></td>
+          <td style="display:flex; gap:10px;">
+            <button class="btn-action btn-edit-ev" data-json='${JSON.stringify(ev)}'>EDITAR</button>
+            <button class="btn-action toggle-ev" data-id="${ev.id}" data-active="${ev.is_active}">${ev.is_active ? 'OCULTAR' : 'MOSTRAR'}</button>
+          </td>
+        `;
+        eventsTableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.toggle-ev').forEach(b => b.onclick = async (e) => {
+        await adminFetch('toggle_event', { id: e.target.dataset.id, is_active: e.target.dataset.active !== 'true' });
+        loadEvents();
+      });
+
+      document.querySelectorAll('.btn-edit-ev').forEach(b => b.onclick = (e) => {
+        const ev = JSON.parse(e.target.dataset.json);
+        openEventModal(ev);
+      });
+    }
   }
 
-  function renderEvents(events) {
-    eventsTableBody.innerHTML = '';
-    if (events.length === 0) {
-      eventsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">No hay eventos creados.</td></tr>';
-      return;
+  document.getElementById('btnOpenNewEvent').onclick = () => openEventModal();
+  document.getElementById('btnCancelEvent').onclick = () => eventModal.style.display = 'none';
+
+  function openEventModal(ev = null) {
+    document.getElementById('eventModalTitle').textContent = ev ? 'EDITAR EVENTO' : 'NUEVO EVENTO';
+    evId.value = ev ? ev.id : '';
+    document.getElementById('evTitle').value = ev ? ev.title : '';
+    document.getElementById('evDesc').value = ev ? (ev.description || '') : '';
+    document.getElementById('evMax').value = ev ? ev.max_tickets_per_member : 5;
+    
+    if (ev && ev.event_date) {
+      const d = new Date(ev.event_date);
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      document.getElementById('evDate').value = d.toISOString().slice(0,16);
+    } else {
+      document.getElementById('evDate').value = '';
     }
+    
+    eventModal.style.display = 'flex';
+  }
 
-    events.forEach(ev => {
-      const tr = document.createElement('tr');
-      const dateStr = new Date(ev.event_date).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
-      
-      tr.innerHTML = `
-        <td><strong>${ev.title}</strong><br><small style="color:#888">${ev.description || ''}</small></td>
-        <td>${dateStr}</td>
-        <td>${ev.max_tickets_per_member} por persona</td>
-        <td>
-          <span style="color: ${ev.is_active ? '#4ade80' : '#f87171'}">
-            ${ev.is_active ? 'Activo (Visible)' : 'Inactivo (Oculto)'}
-          </span>
-        </td>
-        <td>
-          <button class="btn-action toggle-btn" data-id="${ev.id}" data-active="${ev.is_active}">
-            ${ev.is_active ? 'Desactivar' : 'Activar'}
-          </button>
-        </td>
-      `;
-      eventsTableBody.appendChild(tr);
-    });
+  btnSaveEvent.onclick = async () => {
+    const payload = {
+      title: document.getElementById('evTitle').value.trim(),
+      description: document.getElementById('evDesc').value.trim(),
+      event_date: document.getElementById('evDate').value,
+      max_tickets_per_member: document.getElementById('evMax').value,
+      is_active: true
+    };
+    if (!payload.title || !payload.event_date) return alert("Título y fecha obligatorios");
+    
+    btnSaveEvent.textContent = '...';
+    if (evId.value) {
+      payload.id = evId.value;
+      await adminFetch('edit_event', payload);
+    } else {
+      await adminFetch('create_event', payload);
+    }
+    btnSaveEvent.textContent = 'GUARDAR';
+    eventModal.style.display = 'none';
+    loadEvents();
+  };
 
-    // Bind toggles
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.getAttribute('data-id');
-        const currentState = e.target.getAttribute('data-active') === 'true';
+  // --- MEMBERS ---
+  const membersTableBody = document.getElementById('membersTableBody');
+  async function loadMembers() {
+    membersTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
+    const data = await adminFetch('list_members');
+    if (data.success) {
+      membersTableBody.innerHTML = '';
+      data.members.forEach(m => {
+        const tr = document.createElement('tr');
+        const badgeClass = m.status === 'active' ? 'active' : (m.status === 'rejected' ? 'rejected' : 'pending');
+        tr.innerHTML = `
+          <td><strong>${m.nombre || 'N/A'}</strong><br><small style="color:#888">${m.email || ''}</small></td>
+          <td>${m.document_id || 'N/A'}</td>
+          <td>${m.instagram || 'N/A'}</td>
+          <td><span class="badge ${badgeClass}">${m.status ? m.status.toUpperCase() : 'ACTIVE'}</span></td>
+          <td style="display:flex; gap:10px;">
+            <button class="btn-action mem-status" data-id="${m.id}" data-status="active" style="color:#4ade80; border-color:#4ade80;">✓ APROBAR</button>
+            <button class="btn-action mem-status" data-id="${m.id}" data-status="rejected" style="color:#f87171; border-color:#f87171;">✕ RECHAZAR</button>
+          </td>
+        `;
+        membersTableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.mem-status').forEach(b => b.onclick = async (e) => {
+        const btn = e.target;
+        btn.textContent = '...';
+        await adminFetch('update_member_status', { id: btn.dataset.id, status: btn.dataset.status });
+        loadMembers();
+      });
+    }
+  }
+
+  // --- CARTA ---
+  const cartaTableBody = document.getElementById('cartaTableBody');
+  async function loadCarta() {
+    cartaTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
+    const data = await adminFetch('list_carta');
+    if (data.success) {
+      cartaTableBody.innerHTML = '';
+      data.items.forEach(item => {
+        const tr = document.createElement('tr');
+        const catName = item.menu_categories ? item.menu_categories.name : 'N/A';
+        tr.innerHTML = `
+          <td><small style="color:#888">${catName}</small></td>
+          <td><strong>${item.name}</strong></td>
+          <td><input type="number" id="price_${item.id}" value="${item.price}" class="form-control" style="width:80px; padding:4px;"></td>
+          <td>
+            <select id="active_${item.id}" class="form-control" style="width:100px; padding:4px;">
+              <option value="true" ${item.is_active ? 'selected' : ''}>Sí (Stock)</option>
+              <option value="false" ${!item.is_active ? 'selected' : ''}>No (Agotado)</option>
+            </select>
+          </td>
+          <td><button class="btn-action btn-primary save-carta" data-id="${item.id}">GUARDAR</button></td>
+        `;
+        cartaTableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.save-carta').forEach(b => b.onclick = async (e) => {
+        const id = e.target.dataset.id;
+        const price = document.getElementById(`price_${id}`).value;
+        const is_active = document.getElementById(`active_${id}`).value === 'true';
         e.target.textContent = '...';
-        await adminFetch('toggle_event', { id, is_active: !currentState });
-        loadEvents();
+        await adminFetch('update_carta_item', { id, price, is_active });
+        e.target.textContent = '✓ OK';
+        setTimeout(() => e.target.textContent = 'GUARDAR', 2000);
       });
-    });
+    }
   }
-
-  // --- 3. CREATE EVENT ---
-  btnOpenNewEvent.addEventListener('click', () => {
-    newEventModal.style.display = 'flex';
-  });
-
-  btnCancelEvent.addEventListener('click', () => {
-    newEventModal.style.display = 'none';
-  });
-
-  btnSaveEvent.addEventListener('click', async () => {
-    const title = document.getElementById('evTitle').value.trim();
-    const description = document.getElementById('evDesc').value.trim();
-    const event_date = document.getElementById('evDate').value;
-    const max_tickets_per_member = document.getElementById('evMax').value;
-
-    if (!title || !event_date) {
-      alert("Título y fecha son obligatorios");
-      return;
-    }
-
-    btnSaveEvent.textContent = 'Guardando...';
-    try {
-      const data = await adminFetch('create_event', {
-        title, description, event_date, max_tickets_per_member, is_active: true
-      });
-      if (data.success) {
-        newEventModal.style.display = 'none';
-        // Limpiar campos
-        document.getElementById('evTitle').value = '';
-        document.getElementById('evDesc').value = '';
-        document.getElementById('evDate').value = '';
-        loadEvents();
-      } else {
-        alert(data.error || "Error al crear evento");
-      }
-    } catch(e) {
-      alert("Error de red");
-    }
-    btnSaveEvent.textContent = 'Guardar Evento';
-  });
-
 });

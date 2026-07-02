@@ -58,12 +58,14 @@ serve(async (req) => {
     const body = await req.json();
     const { action, token, event_id } = body;
 
-    // Verify authentication
-    if (!token) throw new Error("Missing authentication token");
-    const payload = await verifyJwt(token, JWT_SECRET);
-    if (!payload || !payload.sub) throw new Error("Invalid or expired session");
-    
-    const member_id = payload.sub;
+    // Verify authentication for member actions
+    let member_id = null;
+    if (action !== "validate_ticket") {
+      if (!token) throw new Error("Missing authentication token");
+      const payload = await verifyJwt(token, JWT_SECRET);
+      if (!payload || !payload.sub) throw new Error("Invalid or expired session");
+      member_id = payload.sub;
+    }
 
     // Route: List active events and user's tickets
     if (action === "list_events") {
@@ -144,6 +146,55 @@ serve(async (req) => {
 
       return new Response(
         JSON.stringify({ success: true, ticket: newTicket }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Route: Validate a ticket (For Scanner Panel)
+    if (action === "validate_ticket") {
+      const { qr_code, pin } = body;
+      
+      // Simple security for the scanner panel (PIN code)
+      if (pin !== "2026") {
+        throw new Error("PIN de seguridad incorrecto");
+      }
+      if (!qr_code) throw new Error("Falta el código QR");
+
+      // Buscar el ticket
+      const { data: ticket, error: errFind } = await supabase
+        .from("member_tickets")
+        .select("*, events(title), members(name, document_id)")
+        .eq("qr_code", qr_code)
+        .single();
+
+      if (errFind || !ticket) {
+        throw new Error("CÓDIGO INVÁLIDO O NO ENCONTRADO");
+      }
+
+      if (ticket.status === "used") {
+        return new Response(
+          JSON.stringify({ success: false, error: "ESTA ENTRADA YA FUE USADA", ticket }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      if (ticket.status !== "valid") {
+        return new Response(
+          JSON.stringify({ success: false, error: "ESTA ENTRADA NO ES VÁLIDA", ticket }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Marcar como usado
+      const { error: errUpdate } = await supabase
+        .from("member_tickets")
+        .update({ status: "used" })
+        .eq("id", ticket.id);
+
+      if (errUpdate) throw errUpdate;
+
+      return new Response(
+        JSON.stringify({ success: true, message: "ENTRADA VÁLIDA", ticket }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
