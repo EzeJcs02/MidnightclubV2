@@ -239,31 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.innerHTML = `
           <td><small style="color:#888">${catName}</small></td>
           <td><strong>${item.name}</strong></td>
-          <td><input type="number" id="price_${item.id}" value="${item.price}" class="form-control" style="width:100px; padding:4px;"></td>
-          <td style="display:flex; gap:10px;">
-            <button class="btn-action btn-primary save-carta" data-id="${item.id}">GUARDAR</button>
+          <td>$${item.price}</td>
+          <td>
             <button class="btn-action del-carta" data-id="${item.id}" style="color:#f87171; border-color:#f87171;">ELIMINAR</button>
           </td>
         `;
         cartaTableBody.appendChild(tr);
-      });
-
-      document.querySelectorAll('.save-carta').forEach(b => b.onclick = async (e) => {
-        const id = e.target.dataset.id;
-        const price = document.getElementById(`price_${id}`).value;
-        const is_active = true; // Hardcode to true
-        e.target.textContent = '...';
-        
-        // Need to pass the existing name as well, since update requires it.
-        // Or we can just find it in the DOM, but wait, my admin-api endpoint 'update_carta_item' requires 'name'.
-        // Let's modify the endpoint or send the original name back.
-        // Actually, the endpoint expects `name`, let's just grab the text content from the sibling td.
-        const nameNode = e.target.closest('tr').querySelector('td:nth-child(2) strong');
-        const name = nameNode ? nameNode.textContent : '';
-
-        await adminFetch('update_carta_item', { id, name, price, is_active });
-        e.target.textContent = '✓ OK';
-        setTimeout(() => e.target.textContent = 'GUARDAR', 2000);
       });
 
       document.querySelectorAll('.del-carta').forEach(b => b.onclick = async (e) => {
