@@ -12,6 +12,7 @@ const CONFIG = {
         // Edge Function for member tickets
         TICKETS_FUNCTION: 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/tickets-api'
     },
+    ASSETS: {
         DEFAULT_HERO: 'assets/images/hero_bg.jpg'
     }
 };
