@@ -4,7 +4,7 @@
   "description": "Midnight Club - Club Privado Salta Argentina",
   "private": true,
   "scripts": {
-    "build": "node build.js",
+    "build:prod": "node build.js",
     "build:css": "node build.js --css-only",
     "build:js": "node build.js --js-only",
     "watch": "node build.js --watch",
