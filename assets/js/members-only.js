@@ -125,7 +125,7 @@ async function loadTickets() {
       const hasTicket = evTickets.length > 0;
 
       const card = document.createElement('div');
-      card.className = 'mc-item-row';
+      card.className = 'mc-item-row is-visible';
       card.style.display = 'flex';
       card.style.flexDirection = 'column';
       card.style.alignItems = 'center';
