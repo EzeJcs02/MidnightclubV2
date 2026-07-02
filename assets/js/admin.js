@@ -240,12 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <td><small style="color:#888">${catName}</small></td>
           <td><strong>${item.name}</strong></td>
           <td><input type="number" id="price_${item.id}" value="${item.price}" class="form-control" style="width:100px; padding:4px;"></td>
-          <td>
-            <select id="active_${item.id}" class="form-control" style="width:100px; padding:4px;">
-              <option value="true" ${item.is_active ? 'selected' : ''}>Sí (Stock)</option>
-              <option value="false" ${!item.is_active ? 'selected' : ''}>No (Agotado)</option>
-            </select>
-          </td>
           <td style="display:flex; gap:10px;">
             <button class="btn-action btn-primary save-carta" data-id="${item.id}">GUARDAR</button>
             <button class="btn-action del-carta" data-id="${item.id}" style="color:#f87171; border-color:#f87171;">ELIMINAR</button>
@@ -257,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.save-carta').forEach(b => b.onclick = async (e) => {
         const id = e.target.dataset.id;
         const price = document.getElementById(`price_${id}`).value;
-        const is_active = document.getElementById(`active_${id}`).value === 'true';
+        const is_active = true; // Hardcode to true
         e.target.textContent = '...';
         
         // Need to pass the existing name as well, since update requires it.
@@ -291,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cartaId').value = '';
     document.getElementById('cartaName').value = '';
     document.getElementById('cartaPrice').value = '';
-    document.getElementById('cartaActive').value = 'true';
     document.getElementById('cartaModalTitle').textContent = 'NUEVO ÍTEM';
     cartaModal.style.display = 'flex';
   };
@@ -305,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
       category_id: cartaCatSelect.value,
       name: document.getElementById('cartaName').value.trim(),
       price: document.getElementById('cartaPrice').value,
-      is_active: document.getElementById('cartaActive').value === 'true'
+      is_active: true
     };
     if (!payload.name) return alert("El nombre es obligatorio");
     
