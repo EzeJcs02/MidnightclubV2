@@ -119,11 +119,28 @@ async function loadTickets() {
 
     container.innerHTML = ''; // Limpiar loader
 
+    const groupedEvents = {};
     events.forEach(ev => {
-      // Filtrar tickets de este evento para el usuario
-      const evTickets = tickets.filter(t => t.event_id === ev.id);
-      const hasTicket = evTickets.length > 0;
+      const parts = ev.title.split(' | ');
+      const baseTitle = parts[0];
+      const accessType = parts.length > 1 ? parts[1] : 'INGRESO GENERAL';
+      
+      if (!groupedEvents[baseTitle]) {
+        groupedEvents[baseTitle] = {
+          title: baseTitle,
+          dateStr: new Date(ev.event_date).toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase(),
+          options: []
+        };
+      }
+      groupedEvents[baseTitle].options.push({
+        id: ev.id,
+        accessType: accessType,
+        originalTitle: ev.title,
+        description: ev.description
+      });
+    });
 
+    Object.values(groupedEvents).forEach(group => {
       const card = document.createElement('div');
       card.className = 'mc-item-row is-visible';
       card.style.display = 'flex';
@@ -133,55 +150,60 @@ async function loadTickets() {
 
       const title = document.createElement('h2');
       title.className = 'mc-item-title';
-      title.textContent = ev.title;
+      title.textContent = group.title;
       
-      const dateStr = new Date(ev.event_date).toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
       const desc = document.createElement('div');
       desc.className = 'mc-item-details';
-      desc.textContent = `${dateStr} | ${ev.description || 'EVENTO EXCLUSIVO'}`;
+      desc.textContent = `${group.dateStr} | SELECCIONA TU HORARIO DE INGRESO`;
 
       const btnWrap = document.createElement('div');
       btnWrap.style.marginTop = '1rem';
+      btnWrap.style.display = 'flex';
+      btnWrap.style.gap = '10px';
+      btnWrap.style.flexWrap = 'wrap';
+      btnWrap.style.justifyContent = 'center';
 
-      if (hasTicket) {
-        const ticket = evTickets[0];
+      group.options.forEach(opt => {
+        const evTickets = tickets.filter(t => t.event_id === opt.id);
+        const hasTicket = evTickets.length > 0;
+
         const btn = document.createElement('button');
         btn.className = 'mc-gate-btn';
-        btn.textContent = 'VER QR';
-        btn.style.width = '200px';
-        btn.onclick = () => showQR(ticket.qr_code, ev.title);
-        btnWrap.appendChild(btn);
-      } else {
-        const btn = document.createElement('button');
-        btn.className = 'mc-gate-btn';
-        btn.textContent = 'SACAR ENTRADA';
-        btn.style.width = '200px';
-        btn.style.background = 'transparent';
-        btn.style.border = '1px solid #fff';
-        btn.style.color = '#fff';
+        btn.style.width = '220px';
         
-        btn.onclick = async () => {
-          btn.innerHTML = '<span class="loader" style="display:inline-block"></span>';
-          try {
-            const tkRes = await fetch(CONFIG.SUPABASE.TICKETS_FUNCTION, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'generate_ticket', token: getToken(), event_id: ev.id })
-            });
-            const tkData = await tkRes.json();
-            if(tkData.success) {
-              loadTickets(); // Recargar para mostrar "VER QR"
-            } else {
-              alert(tkData.error || "Error al sacar entrada");
-              btn.innerHTML = 'SACAR ENTRADA';
+        if (hasTicket) {
+          const ticket = evTickets[0];
+          btn.textContent = `VER QR (${opt.accessType})`;
+          btn.onclick = () => showQR(ticket.qr_code, opt.originalTitle);
+        } else {
+          btn.textContent = `SACAR ENTRADA (${opt.accessType})`;
+          btn.style.background = 'transparent';
+          btn.style.border = '1px solid #fff';
+          btn.style.color = '#fff';
+          
+          btn.onclick = async () => {
+            btn.innerHTML = '<span class="loader" style="display:inline-block"></span>';
+            try {
+              const tkRes = await fetch(CONFIG.SUPABASE.TICKETS_FUNCTION, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'generate_ticket', token: getToken(), event_id: opt.id })
+              });
+              const tkData = await tkRes.json();
+              if(tkData.success) {
+                loadTickets(); // Recargar para mostrar "VER QR"
+              } else {
+                alert(tkData.error || "Error al sacar entrada");
+                btn.innerHTML = `SACAR ENTRADA (${opt.accessType})`;
+              }
+            } catch(e) {
+              alert("Error de conexión");
+              btn.innerHTML = `SACAR ENTRADA (${opt.accessType})`;
             }
-          } catch(e) {
-            alert("Error de conexión");
-            btn.innerHTML = 'SACAR ENTRADA';
-          }
-        };
+          };
+        }
         btnWrap.appendChild(btn);
-      }
+      });
 
       card.appendChild(title);
       card.appendChild(desc);
