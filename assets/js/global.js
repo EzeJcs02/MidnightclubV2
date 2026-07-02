@@ -1,9 +1,8 @@
-// Global Configuration & Utilities
-// Depends on: @supabase/supabase-js (CDN)
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import CONFIG from './config.js';
 
 // Initialize Client using centralized config
-export const client = window.supabase.createClient(
+export const client = createClient(
   CONFIG.SUPABASE.URL,
   CONFIG.SUPABASE.ANON_KEY
 );

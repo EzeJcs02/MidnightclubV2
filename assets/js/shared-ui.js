@@ -398,7 +398,7 @@ export function setupAuthUI() {
   async function doLogin() {
     const id = inpId.value.trim().toUpperCase();
     const pass = inpPass.value.trim().toUpperCase();
-    btnSubmit.textContent = "VERIFICANDO...";
+    btnSubmit.innerHTML = '<span class="loader" style="display:inline-block"></span>VERIFICANDO...';
 
     try {
       const result = await authRequest('login', { member_id: id, password: pass });
@@ -409,7 +409,7 @@ export function setupAuthUI() {
         localStorage.setItem('mc_member_session', JSON.stringify(result.member));
         window.location.href = 'members-only.html';
       } else {
-        btnSubmit.textContent = "ENTRAR";
+        btnSubmit.innerHTML = 'ENTRAR';
         card.classList.add('mc-shake');
         setTimeout(() => card.classList.remove('mc-shake'), 500);
         errorMsg.style.display = 'block';
@@ -418,7 +418,7 @@ export function setupAuthUI() {
       }
     } catch (err) {
       console.error('Login error:', err);
-      btnSubmit.textContent = "ENTRAR";
+      btnSubmit.innerHTML = 'ENTRAR';
       errorMsg.style.display = 'block';
       errorMsg.textContent = "Error de conexión";
     }
@@ -437,7 +437,7 @@ export function setupAuthUI() {
       return;
     }
 
-    btnRecSubmit.textContent = "PROCESANDO...";
+    btnRecSubmit.innerHTML = '<span class="loader" style="display:inline-block"></span>PROCESANDO...';
     recMsg.style.display = 'none';
 
     try {
@@ -448,15 +448,15 @@ export function setupAuthUI() {
       recMsg.style.display = 'block';
       recMsg.style.color = '#cdfb3e';
       recMsg.innerHTML = "SI EL EMAIL EXISTE, RECIBIRÁS INSTRUCCIONES EN 2-3 MIN<br><span class='opacity-70 text-xs'>REVISÁ TAMBIÉN TU CARPETA DE SPAM</span>";
-      btnRecSubmit.textContent = "ENVIADO";
+      btnRecSubmit.innerHTML = 'RECUPERAR';
 
       setTimeout(() => switchView('login'), 4000);
     } catch (err) {
       console.error('Recovery error:', err);
-      btnRecSubmit.textContent = "REINTENTAR";
       recMsg.style.display = 'block';
       recMsg.style.color = 'var(--mc-red)';
       recMsg.innerText = err.message || "ERROR DE CONEXIÓN";
+      btnRecSubmit.innerHTML = 'RECUPERAR';
     }
   }
   if(btnRecSubmit) btnRecSubmit.addEventListener('click', doRecovery);

@@ -112,7 +112,7 @@ function setupChangePassword() {
       if(newPass.length < 4) { alert("NUEVA CONTRASEÑA: MÍNIMO 4 CARACTERES"); return; }
       if(!currentPass) { alert("INGRESA TU CONTRASEÑA ACTUAL"); return; }
 
-      btnSavePass.textContent = "GUARDANDO...";
+      btnSavePass.innerHTML = '<span class="loader" style="display:inline-block"></span> GUARDANDO...';
 
       try {
         const response = await fetch(CONFIG.SUPABASE.AUTH_FUNCTION, {
@@ -134,12 +134,12 @@ function setupChangePassword() {
           window.location.href = 'index';
         } else {
           alert(result.error || "ERROR AL ACTUALIZAR");
-          btnSavePass.textContent = "ACTUALIZAR";
+          btnSavePass.innerHTML = 'ACTUALIZAR';
         }
       } catch(err) {
         console.error('Password change error:', err);
         alert("ERROR DE CONEXIÓN");
-        btnSavePass.textContent = "ACTUALIZAR";
+        btnSavePass.innerHTML = 'ACTUALIZAR';
       }
     });
 }
