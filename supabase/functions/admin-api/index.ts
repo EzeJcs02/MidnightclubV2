@@ -167,14 +167,31 @@ serve(async (req) => {
     if (action === "list_carta") {
       const { data: items, error: errItems } = await supabase.from("menu_items").select("*, menu_categories(name)").order("created_at", { ascending: false });
       if (errItems) throw errItems;
-      return new Response(JSON.stringify({ success: true, items }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const { data: categories, error: errCat } = await supabase.from("menu_categories").select("*");
+      return new Response(JSON.stringify({ success: true, items, categories }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    if (action === "create_carta_item") {
+      const { category_id, name, price, is_active } = payload;
+      const { data: newItem, error: errInsert } = await supabase.from("menu_items").insert({
+        category_id, name, price: parseFloat(price) || 0, is_active: is_active === true
+      }).select().single();
+      if (errInsert) throw errInsert;
+      return new Response(JSON.stringify({ success: true, item: newItem }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "update_carta_item") {
-      const { id, price, is_active } = payload;
-      const { data: updatedItem, error: errUpd } = await supabase.from("menu_items").update({ price, is_active }).eq("id", id).select().single();
+      const { id, name, price, is_active } = payload;
+      const { data: updatedItem, error: errUpd } = await supabase.from("menu_items").update({ name, price, is_active }).eq("id", id).select().single();
       if (errUpd) throw errUpd;
       return new Response(JSON.stringify({ success: true, item: updatedItem }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    if (action === "delete_carta_item") {
+      const { id } = payload;
+      const { error: errDel } = await supabase.from("menu_items").delete().eq("id", id);
+      if (errDel) throw errDel;
+      return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     throw new Error("Unknown action");

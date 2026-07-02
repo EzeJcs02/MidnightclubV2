@@ -215,10 +215,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- CARTA ---
   const cartaTableBody = document.getElementById('cartaTableBody');
+  const cartaModal = document.getElementById('cartaModal');
+  const cartaCatSelect = document.getElementById('cartaCat');
+  const btnOpenNewCarta = document.getElementById('btnOpenNewCarta');
+  const btnCancelCarta = document.getElementById('btnCancelCarta');
+  const btnSaveCarta = document.getElementById('btnSaveCarta');
+
+  let currentCategories = [];
+
   async function loadCarta() {
     cartaTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
     const data = await adminFetch('list_carta');
     if (data.success) {
+      currentCategories = data.categories || [];
+      
+      // Populate category select in modal
+      cartaCatSelect.innerHTML = currentCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
       cartaTableBody.innerHTML = '';
       data.items.forEach(item => {
         const tr = document.createElement('tr');
@@ -226,14 +239,17 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.innerHTML = `
           <td><small style="color:#888">${catName}</small></td>
           <td><strong>${item.name}</strong></td>
-          <td><input type="number" id="price_${item.id}" value="${item.price}" class="form-control" style="width:80px; padding:4px;"></td>
+          <td><input type="number" id="price_${item.id}" value="${item.price}" class="form-control" style="width:100px; padding:4px;"></td>
           <td>
             <select id="active_${item.id}" class="form-control" style="width:100px; padding:4px;">
               <option value="true" ${item.is_active ? 'selected' : ''}>Sí (Stock)</option>
               <option value="false" ${!item.is_active ? 'selected' : ''}>No (Agotado)</option>
             </select>
           </td>
-          <td><button class="btn-action btn-primary save-carta" data-id="${item.id}">GUARDAR</button></td>
+          <td style="display:flex; gap:10px;">
+            <button class="btn-action btn-primary save-carta" data-id="${item.id}">GUARDAR</button>
+            <button class="btn-action del-carta" data-id="${item.id}" style="color:#f87171; border-color:#f87171;">ELIMINAR</button>
+          </td>
         `;
         cartaTableBody.appendChild(tr);
       });
@@ -243,10 +259,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = document.getElementById(`price_${id}`).value;
         const is_active = document.getElementById(`active_${id}`).value === 'true';
         e.target.textContent = '...';
-        await adminFetch('update_carta_item', { id, price, is_active });
+        
+        // Need to pass the existing name as well, since update requires it.
+        // Or we can just find it in the DOM, but wait, my admin-api endpoint 'update_carta_item' requires 'name'.
+        // Let's modify the endpoint or send the original name back.
+        // Actually, the endpoint expects `name`, let's just grab the text content from the sibling td.
+        const nameNode = e.target.closest('tr').querySelector('td:nth-child(2) strong');
+        const name = nameNode ? nameNode.textContent : '';
+
+        await adminFetch('update_carta_item', { id, name, price, is_active });
         e.target.textContent = '✓ OK';
         setTimeout(() => e.target.textContent = 'GUARDAR', 2000);
       });
+
+      document.querySelectorAll('.del-carta').forEach(b => b.onclick = async (e) => {
+        if(confirm("¿Seguro que deseas eliminar este ítem?")) {
+          e.target.textContent = '...';
+          await adminFetch('delete_carta_item', { id: e.target.dataset.id });
+          loadCarta();
+        }
+      });
     }
   }
+
+  // New Carta Item Modal Logic
+  btnOpenNewCarta.onclick = () => {
+    if(currentCategories.length === 0) {
+      alert("Debes crear categorías en la base de datos primero.");
+      return;
+    }
+    document.getElementById('cartaId').value = '';
+    document.getElementById('cartaName').value = '';
+    document.getElementById('cartaPrice').value = '';
+    document.getElementById('cartaActive').value = 'true';
+    document.getElementById('cartaModalTitle').textContent = 'NUEVO ÍTEM';
+    cartaModal.style.display = 'flex';
+  };
+
+  btnCancelCarta.onclick = () => {
+    cartaModal.style.display = 'none';
+  };
+
+  btnSaveCarta.onclick = async () => {
+    const payload = {
+      category_id: cartaCatSelect.value,
+      name: document.getElementById('cartaName').value.trim(),
+      price: document.getElementById('cartaPrice').value,
+      is_active: document.getElementById('cartaActive').value === 'true'
+    };
+    if (!payload.name) return alert("El nombre es obligatorio");
+    
+    btnSaveCarta.textContent = '...';
+    await adminFetch('create_carta_item', payload);
+    btnSaveCarta.textContent = 'GUARDAR';
+    cartaModal.style.display = 'none';
+    loadCarta();
+  };
 });

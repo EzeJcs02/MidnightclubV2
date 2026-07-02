@@ -242,15 +242,18 @@
 
       <!-- TAB: CARTA -->
       <div id="tab-carta" class="tab-pane">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+          <button id="btnOpenNewCarta" class="btn-action btn-primary">+ NUEVO ÍTEM</button>
+        </div>
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
                 <th>Categoría</th>
-                <th>Producto</th>
+                <th>Nombre del Producto</th>
                 <th>Precio</th>
-                <th>Stock Visible</th>
-                <th>Guardar</th>
+                <th>Stock</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody id="cartaTableBody"></tbody>
@@ -285,6 +288,39 @@
       <div style="display: flex; gap: 15px; margin-top: 40px;">
         <button id="btnCancelEvent" class="btn-action" style="flex: 1;">CANCELAR</button>
         <button id="btnSaveEvent" class="btn-action btn-primary" style="flex: 1;">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CARTA -->
+  <div class="modal-overlay" id="cartaModal">
+    <div class="modal-content">
+      <h2 style="font-family: 'Space Grotesk'; font-weight: 300; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px;" id="cartaModalTitle">NUEVO ÍTEM</h2>
+      <input type="hidden" id="cartaId">
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="cartaCat" class="form-control" style="background: #000;">
+          <!-- Opciones cargadas dinámicamente -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nombre del Producto</label>
+        <input type="text" id="cartaName" class="form-control" placeholder="Ej: VODKA ABSOLUT">
+      </div>
+      <div class="form-group">
+        <label>Precio ($)</label>
+        <input type="number" id="cartaPrice" class="form-control" placeholder="Ej: 15000">
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="cartaActive" class="form-control" style="background: #000;">
+          <option value="true">Sí (Con Stock)</option>
+          <option value="false">No (Agotado)</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 15px; margin-top: 40px;">
+        <button id="btnCancelCarta" class="btn-action" style="flex: 1;">CANCELAR</button>
+        <button id="btnSaveCarta" class="btn-action btn-primary" style="flex: 1;">GUARDAR</button>
       </div>
     </div>
   </div>
