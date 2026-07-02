@@ -165,24 +165,33 @@ async function loadTickets() {
 
       group.options.forEach(opt => {
         const evTickets = tickets.filter(t => t.event_id === opt.id);
-        const hasTicket = evTickets.length > 0;
-
-        const btn = document.createElement('button');
-        btn.className = 'mc-gate-btn';
-        btn.style.width = '220px';
         
-        if (hasTicket) {
-          const ticket = evTickets[0];
-          btn.textContent = `VER QR (${opt.accessType})`;
-          btn.onclick = () => showQR(ticket.qr_code, opt.originalTitle);
-        } else {
-          btn.textContent = `SACAR ENTRADA (${opt.accessType})`;
-          btn.style.background = 'transparent';
-          btn.style.border = '1px solid #fff';
-          btn.style.color = '#fff';
+        // Determinar max_tickets
+        const eventDef = events.find(e => e.id === opt.id);
+        const maxTickets = eventDef ? eventDef.max_tickets_per_member : 1;
+
+        // Mostrar un botón "VER QR" por cada ticket generado
+        evTickets.forEach((ticket, index) => {
+          const btn = document.createElement('button');
+          btn.className = 'mc-gate-btn';
+          btn.style.width = '220px';
+          btn.textContent = evTickets.length > 1 ? `VER QR #${index + 1} (${opt.accessType})` : `VER QR (${opt.accessType})`;
+          btn.onclick = () => showQR(ticket.qr_code, evTickets.length > 1 ? `${opt.originalTitle} - Entrada #${index + 1}` : opt.originalTitle);
+          btnWrap.appendChild(btn);
+        });
+
+        // Mostrar botón "SACAR ENTRADA" si aún no alcanzan el límite
+        if (evTickets.length < maxTickets) {
+          const btnNew = document.createElement('button');
+          btnNew.className = 'mc-gate-btn';
+          btnNew.style.width = '220px';
+          btnNew.style.background = 'transparent';
+          btnNew.style.border = '1px solid #fff';
+          btnNew.style.color = '#fff';
+          btnNew.textContent = evTickets.length > 0 ? `SACAR OTRA (${opt.accessType})` : `SACAR ENTRADA (${opt.accessType})`;
           
-          btn.onclick = async () => {
-            btn.innerHTML = '<span class="loader" style="display:inline-block"></span>';
+          btnNew.onclick = async () => {
+            btnNew.innerHTML = '<span class="loader" style="display:inline-block"></span>';
             try {
               const tkRes = await fetch(CONFIG.SUPABASE.TICKETS_FUNCTION, {
                 method: 'POST',
@@ -194,15 +203,15 @@ async function loadTickets() {
                 loadTickets(); // Recargar para mostrar "VER QR"
               } else {
                 alert(tkData.error || "Error al sacar entrada");
-                btn.innerHTML = `SACAR ENTRADA (${opt.accessType})`;
+                btnNew.innerHTML = evTickets.length > 0 ? `SACAR OTRA (${opt.accessType})` : `SACAR ENTRADA (${opt.accessType})`;
               }
             } catch(e) {
               alert("Error de conexión");
-              btn.innerHTML = `SACAR ENTRADA (${opt.accessType})`;
+              btnNew.innerHTML = evTickets.length > 0 ? `SACAR OTRA (${opt.accessType})` : `SACAR ENTRADA (${opt.accessType})`;
             }
           };
+          btnWrap.appendChild(btnNew);
         }
-        btnWrap.appendChild(btn);
       });
 
       card.appendChild(title);
