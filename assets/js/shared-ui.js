@@ -420,7 +420,7 @@ export function setupAuthUI() {
       console.error('Login error:', err);
       btnSubmit.innerHTML = 'ENTRAR';
       errorMsg.style.display = 'block';
-      errorMsg.textContent = "Error de conexión";
+      errorMsg.textContent = err.message || "Error de conexión";
     }
   }
   if(btnSubmit) btnSubmit.addEventListener('click', doLogin);
