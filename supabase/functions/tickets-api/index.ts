@@ -61,9 +61,9 @@ serve(async (req) => {
     // Verify authentication
     if (!token) throw new Error("Missing authentication token");
     const payload = await verifyJwt(token, JWT_SECRET);
-    if (!payload || !payload.id) throw new Error("Invalid or expired session");
+    if (!payload || !payload.sub) throw new Error("Invalid or expired session");
     
-    const member_id = payload.id;
+    const member_id = payload.sub;
 
     // Route: List active events and user's tickets
     if (action === "list_events") {

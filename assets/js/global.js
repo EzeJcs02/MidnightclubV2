@@ -60,7 +60,7 @@ export function clearSession() {
 export async function requireAuth() {
   const member = await validateSession();
   if (!member) {
-    window.location.href = 'index';
+    window.location.href = 'index.html';
     return null;
   }
   return member;
@@ -70,7 +70,7 @@ export async function requireAuth() {
 export function requireAuthSync() {
   const user = getSession();
   if (!user || !getToken()) {
-    window.location.href = 'index';
+    window.location.href = 'index.html';
     return null;
   }
   return user;

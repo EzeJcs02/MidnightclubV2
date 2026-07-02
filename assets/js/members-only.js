@@ -5,7 +5,7 @@ import { syncDynamicCards, setupGlobalNav } from './shared-ui.js';
 // 1. QUICK SYNC CHECK (blocks unauthorized before page loads)
 let memberData = requireAuthSync();
 if (!memberData) {
-    window.location.href = 'index';
+    window.location.href = 'index.html';
     throw new Error("Unauthorized");
 }
 
@@ -34,7 +34,7 @@ async function init() {
         const validMember = await validateSession();
         if (!validMember) {
             clearSession();
-            window.location.href = 'index';
+            window.location.href = 'index.html';
             return;
         }
         memberData = validMember;
@@ -47,7 +47,7 @@ async function init() {
     } catch (err) {
         console.error('Session validation failed:', err);
         clearSession();
-        window.location.href = 'index';
+        window.location.href = 'index.html';
     }
 }
 
