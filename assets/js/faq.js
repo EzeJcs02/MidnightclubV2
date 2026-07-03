@@ -5,17 +5,19 @@ function initFaq() {
     if (!path.includes('faq')) return;
     setupAuthUI();
     
-    document.querySelectorAll('.faq-question').forEach(item => {
+    document.querySelectorAll('.faq-item').forEach(item => {
         // Prevent duplicate listeners
         if (item.dataset.hasListener) return;
         item.dataset.hasListener = 'true';
         
-        item.addEventListener('click', () => {
-            const parent = item.parentElement;
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Close others
             document.querySelectorAll('.faq-item').forEach(child => {
-                if (child !== parent) child.classList.remove('active');
+                if (child !== item) child.classList.remove('active');
             });
-            parent.classList.toggle('active');
+            // Toggle current
+            item.classList.toggle('active');
         });
     });
 }

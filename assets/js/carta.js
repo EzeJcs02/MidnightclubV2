@@ -95,112 +95,75 @@ function renderMenu() {
         if (catItems.length > 0) {
             totalItemsVisible += catItems.length;
 
-            // Bloque Categoría
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'category-group';
-            
-            if (currentSearch.length > 0) groupDiv.classList.add('open');
+            const groupLink = document.createElement('a');
+            groupLink.href = "#";
+            groupLink.className = 'editorial-nav-link cat-header';
+            if (currentSearch.length > 0) groupLink.classList.add('active');
 
-            // Header Acordeón
-            const header = document.createElement('div');
-            header.className = 'category-header';
-            header.onclick = () => {
-                const isOpen = groupDiv.classList.contains('open');
+            groupLink.addEventListener('click', (e) => {
+                // Prevent toggle if clicking on an item inside
+                if (e.target.closest('.carta-item-row')) return;
+                e.preventDefault();
                 
-                // Close others
-                document.querySelectorAll('.category-group').forEach(c => c.classList.remove('open'));
-                
-                // Toggle current
-                if(!isOpen) {
-                    groupDiv.classList.add('open');
+                const isOpen = groupLink.classList.contains('active');
+                if (!currentSearch) {
+                    document.querySelectorAll('.cat-header').forEach(c => c.classList.remove('active'));
+                }
+                if (!isOpen) {
+                    groupLink.classList.add('active');
                     setTimeout(() => {
-                        const yOffset = -120;
-                        const y = groupDiv.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                        const y = groupLink.getBoundingClientRect().top + window.pageYOffset - 100;
                         window.scrollTo({top: y, behavior: 'smooth'});
                     }, 300);
                 }
-            };
-            
-            const catTitle = document.createElement('div');
-            catTitle.className = 'cat-title';
-            catTitle.textContent = cat.name;
-            
-            const catIcon = document.createElement('div');
-            catIcon.className = 'cat-icon';
-            catIcon.textContent = '▼';
-            
-            header.appendChild(catTitle);
-            header.appendChild(catIcon);
+            });
 
-            // Contenido
+            const navMeta = document.createElement('span');
+            navMeta.className = 'nav-meta';
+            navMeta.textContent = `0${cat.id} // CATEGORY`;
+
+            const navTitle = document.createElement('h2');
+            navTitle.className = 'nav-title';
+            navTitle.style.fontSize = 'clamp(1.8rem, 6vw, 4rem)';
+            navTitle.textContent = cat.name;
+
             const content = document.createElement('div');
-            content.className = 'category-items';
+            content.className = 'cat-content';
 
-            let lastSub = '';
-            
             catItems.forEach(item => {
-                const currentSub = item.subcategory || '';
-                if (currentSub && currentSub !== lastSub) {
-                    const subTitle = document.createElement('h3');
-                    subTitle.className = 'subcategory-title';
-                    subTitle.innerText = currentSub;
-                    content.appendChild(subTitle);
-                    lastSub = currentSub;
-                }
-
                 const itemDiv = document.createElement('div');
-                itemDiv.className = `item ${item.is_active ? '' : 'no-stock'}`;
-                itemDiv.onclick = () => openPriceModal(item);
-
-                const cashPrice = item.price ?? 0;
-                const cardPrice = Math.round(cashPrice * 1.25);
-                const fmtCard = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(cardPrice);
-
-                // Item Left
-                const itemLeft = document.createElement('div');
-                itemLeft.className = 'item-left';
-
-                const itemInfo = document.createElement('div');
-                itemInfo.className = 'item-info';
+                itemDiv.className = `carta-item-row ${item.is_active ? '' : 'sold-out'}`;
+                itemDiv.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openPriceModal(item);
+                };
 
                 const itemName = document.createElement('div');
-                itemName.className = 'item-name';
+                itemName.className = 'carta-item-name';
+                itemName.textContent = item.name;
+
+                const itemPrice = document.createElement('div');
+                itemPrice.className = 'carta-item-price';
                 
                 if (!item.is_active) {
-                    const badgeStock = document.createElement('span');
-                    badgeStock.className = 'badge-stock';
-                    badgeStock.textContent = 'SIN STOCK';
-                    itemName.appendChild(badgeStock);
+                    itemPrice.textContent = 'SOLD OUT';
+                    itemPrice.style.color = 'red';
+                } else {
+                    const cashPrice = item.price ?? 0;
+                    const cardPrice = Math.round(cashPrice * 1.25);
+                    itemPrice.textContent = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(cardPrice);
                 }
-                if (item.is_pick) {
-                    const badgePick = document.createElement('span');
-                    badgePick.className = 'badge-pick';
-                    badgePick.textContent = 'PICK';
-                    itemName.appendChild(badgePick);
-                }
-                itemName.appendChild(document.createTextNode(item.name || ''));
 
-                const itemDesc = document.createElement('div');
-                itemDesc.className = 'item-desc';
-                itemDesc.textContent = item.description || '';
-
-                itemInfo.appendChild(itemName);
-                itemInfo.appendChild(itemDesc);
-                itemLeft.appendChild(itemInfo);
-
-                const itemPrices = document.createElement('div');
-                itemPrices.className = 'item-prices';
-                itemPrices.textContent = fmtCard;
-
-                itemDiv.appendChild(itemLeft);
-                itemDiv.appendChild(itemPrices);
-
+                itemDiv.appendChild(itemName);
+                itemDiv.appendChild(itemPrice);
                 content.appendChild(itemDiv);
             });
 
-            groupDiv.appendChild(header);
-            groupDiv.appendChild(content);
-            container.appendChild(groupDiv);
+            groupLink.appendChild(navMeta);
+            groupLink.appendChild(navTitle);
+            groupLink.appendChild(content);
+            container.appendChild(groupLink);
         }
     });
 

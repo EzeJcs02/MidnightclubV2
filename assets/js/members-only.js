@@ -140,47 +140,55 @@ async function loadTickets() {
       });
     });
 
-    Object.values(groupedEvents).forEach(group => {
+    Object.values(groupedEvents).forEach((group, groupIdx) => {
       const card = document.createElement('div');
-      card.className = 'mc-item-row is-visible';
-      card.style.display = 'flex';
-      card.style.flexDirection = 'column';
-      card.style.alignItems = 'center';
-      card.style.textAlign = 'center';
+      card.className = 'editorial-nav-link';
+      card.style.display = 'block';
+      card.style.cursor = 'default';
+
+      const meta = document.createElement('span');
+      meta.className = 'nav-meta';
+      meta.textContent = `0${groupIdx + 1} // ${group.dateStr}`;
 
       const title = document.createElement('h2');
-      title.className = 'mc-item-title';
+      title.className = 'nav-title';
+      title.style.fontSize = 'clamp(2rem, 5vw, 4rem)';
       title.textContent = group.title;
       
-      const desc = document.createElement('div');
-      desc.className = 'mc-item-details';
-      desc.textContent = `${group.dateStr} | SELECCIONA TU HORARIO DE INGRESO`;
-
       const btnWrap = document.createElement('div');
-      btnWrap.style.marginTop = '1rem';
+      btnWrap.style.marginTop = '2rem';
       btnWrap.style.display = 'flex';
-      btnWrap.style.gap = '10px';
+      btnWrap.style.gap = '1rem';
       btnWrap.style.flexWrap = 'wrap';
-      btnWrap.style.justifyContent = 'center';
 
       group.options.forEach(opt => {
         const evTickets = tickets.filter(t => t.event_id === opt.id);
         
-        // Determinar max_tickets
-        const eventDef = events.find(e => e.id === opt.id);
-        const maxTickets = eventDef ? eventDef.max_tickets_per_member : 1;
-
-        // Mostrar un botón "VER QR" por cada ticket generado
         evTickets.forEach((ticket, index) => {
           const btn = document.createElement('button');
-          btn.className = 'mc-gate-btn';
-          btn.style.width = '220px';
+          btn.style.background = 'transparent';
+          btn.style.border = '1px solid rgba(255,255,255,0.5)';
+          btn.style.color = '#fff';
+          btn.style.fontFamily = "'Space Grotesk', sans-serif";
+          btn.style.padding = '1rem 2rem';
+          btn.style.cursor = 'pointer';
+          btn.style.textTransform = 'uppercase';
           btn.textContent = evTickets.length > 1 ? `VER QR #${index + 1} (${opt.accessType})` : `VER QR (${opt.accessType})`;
-          btn.onclick = () => showQR(ticket.qr_code, evTickets.length > 1 ? `${opt.originalTitle} - Entrada #${index + 1}` : opt.originalTitle);
+          
+          btn.onmouseover = () => { btn.style.background = '#fff'; btn.style.color = '#000'; };
+          btn.onmouseout = () => { btn.style.background = 'transparent'; btn.style.color = '#fff'; };
+          
+          btn.onclick = (e) => {
+              e.preventDefault();
+              showQR(ticket.qr_code, evTickets.length > 1 ? `${opt.originalTitle} - Entrada #${index + 1}` : opt.originalTitle);
+          };
           btnWrap.appendChild(btn);
         });
 
         // Mostrar botón "SACAR ENTRADA" si aún no alcanzan el límite
+        const eventDef = events.find(e => e.id === opt.id);
+        const maxTickets = eventDef ? eventDef.max_tickets_per_member : 1;
+        
         if (evTickets.length < maxTickets) {
           const btnNew = document.createElement('button');
           btnNew.className = 'mc-gate-btn';
@@ -214,8 +222,8 @@ async function loadTickets() {
         }
       });
 
+      card.appendChild(meta);
       card.appendChild(title);
-      card.appendChild(desc);
       card.appendChild(btnWrap);
       container.appendChild(card);
     });

@@ -3,12 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Carta - Midnight Club</title>
-  <meta name="description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta name="keywords" content="club privado, salta, midnight club, membresias">
-  <meta property="og:title" content="Carta y Menú - Midnight Club">
-  <meta property="og:description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta property="og:image" content="https://midnightclub.com.ar/assets/images/hero-optimized.jpg">
-  <meta property="og:type" content="website">
+  <meta name="description" content="Midnight Club - Menú y Precios">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,252 +15,67 @@
   <link rel="stylesheet" href="assets/css/components.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/utils.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/layout.css?v=rebrand3">
-  
-  
 
   <style>
-    /* Structural Noir - Menu Styles */
-    .carta-search {
-      padding: 2rem 1.5rem 1.5rem;
-      position: sticky;
-      top: 60px; /* Below top-app-bar */
-      z-index: 40;
-      background: transparent;
-      border-bottom: 1px solid #2a2a2a;
-    }
-    .promo-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 6vw, 3rem);
-      font-weight: 700;
-      color: #cdfb3e;
-      text-transform: uppercase;
-      letter-spacing: -0.05em;
-      line-height: 1;
-      margin-bottom: 1.5rem;
-    }
-    .search-input-wrapper {
-      position: relative;
-      width: 100%;
-    }
-    .search-icon {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #474747;
-      font-size: 1.5rem;
-    }
-    .carta-search input {
-      width: 100%;
-      padding: 1rem 0 1rem 2.25rem;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid #474747;
-      font-size: 1.125rem;
-      color: #ffffff;
-      outline: none;
-      font-family: 'Space Grotesk', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      border-radius: 0;
-      transition: border-color 0.2s;
-    }
-    .carta-search input::placeholder {
-      color: #474747;
-    }
-    .carta-search input:focus {
-      border-color: #cdfb3e;
-    }
-    
-    .carta-categories {
-      padding-bottom: 8rem;
-    }
-    
-    .category-header {
+    /* Structural Noir - Carta specific overrides */
+    .carta-item-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 3rem 1.5rem;
-      cursor: pointer;
-      border-bottom: 1px solid #474747;
-      background: transparent;
+      width: 100%;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1.5rem 0;
     }
-    .category-header:hover { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    .category-header:hover .cat-title, .category-header:hover .cat-icon { color: #ffffff; }
-    
-    .cat-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 5vw, 4rem);
-      font-weight: 700;
+    .carta-item-name {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      font-weight: 500;
+      color: #fff;
       text-transform: uppercase;
-      letter-spacing: -0.05em;
-      color: #ffffff;
-      margin: 0;
-      line-height: 1;
+      letter-spacing: 0.1em;
     }
-    .cat-icon {
+    .carta-item-price {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      color: #999;
+    }
+    .sold-out {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+    
+    .cat-content {
+      display: none;
+      padding-top: 1rem;
+    }
+    .editorial-nav-link.active .cat-content {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .search-input-wrapper {
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid #474747;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .search-input-wrapper input {
+      background: transparent;
+      border: none;
+      color: #fff;
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.5rem;
-      color: #ffffff;
-      transition: transform 0.3s;
-    }
-    .category-group.open .cat-icon { transform: rotate(180deg); }
-    
-    .category-items {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .category-group.open .category-items { max-height: 5000px; }
-    
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 1.5rem;
-      background: transparent;
-      cursor: pointer;
-      border-bottom: 1px solid #2a2a2a;
-    }
-    .item:hover { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-    .item.no-stock { opacity: 0.4; pointer-events: none; }
-    
-    .item-info { flex: 1; padding-right: 1rem; }
-    .item-name {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 700;
+      width: 100%;
+      outline: none;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #ffffff;
-      margin-bottom: 0.25rem;
     }
-    .item-desc {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.75rem;
-      color: #919191;
-      line-height: 1.5;
-    }
-    
-    .badge-stock, .badge-pick {
-      display: inline-block;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.625rem;
-      font-weight: 700;
-      padding: 0.125rem 0.25rem;
-      margin-right: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border: 1px solid;
-    }
-    .badge-stock { color: #ffffff; border-color: #ffffff; }
-    .badge-pick { color: #000000; background: #ffffff; border-color: #ffffff; }
-    
-    .item-prices {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: -0.05em;
-      font-variant-numeric: tabular-nums;
-    }
-    
-    .plus-icon { display: none; }
-    
-    .subcategory-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.625rem;
-      color: #919191;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      padding: 2rem 1.5rem 0.5rem;
-      margin: 0;
-      border-bottom: 1px solid #2a2a2a;
-    }
-    
-    .no-results, .loading-spinner {
-      text-align: left;
-      padding: 3rem 1.5rem;
-      color: #919191;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    
-    /* Structural Noir Modal */
-    .price-modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(19,19,19,0.6);
-      display: none; justify-content: center; align-items: center;
-      z-index: 100; opacity: 0; transition: opacity 0.2s;
-    }
-    .price-modal-overlay.open { opacity: 1; }
-    
-    .price-card {
-      background: rgba(19, 19, 19, 0.4);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      width: 100%; max-width: 400px;
-      padding: 2rem;
-      text-align: left;
-    }
-    
-    .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin: 0 0 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: -0.05em;
-    }
-    .modal-desc {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      color: #919191;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-    
-    .price-row {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      padding: 1rem 0; border-top: 1px solid #474747;
-    }
-    .price-label {
-      font-family: 'Inter', sans-serif; font-size: 0.625rem; color: #919191;
-      text-transform: uppercase; letter-spacing: 0.1em;
-    }
-    .price-value {
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #ffffff;
-      letter-spacing: -0.05em; font-variant-numeric: tabular-nums;
-    }
-    
-    .price-highlight {
-      border: 1px solid #ffffff; background: #ffffff; padding: 1.5rem;
-      margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;
-    }
-    .price-highlight .price-label { color: #000000; font-weight: 700; }
-    .price-highlight .price-value { color: #000000; font-size: 2rem; }
-    
-    .btn-close-modal {
-      width: 100%; padding: 1.5rem; margin-top: 2rem;
-      background: transparent; color: #ffffff; border: 1px solid #ffffff;
-      font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-    .btn-close-modal:hover { background: #ffffff; color: #000000; }
-    
-    .skeleton-card {
-      background: #1a1a1a;
-      height: 60px;
-      margin: 1rem 1.5rem;
-      border: 1px solid #2a2a2a;
+    .search-input-wrapper input::placeholder {
+      color: #666;
     }
   </style>
 </head>
+
 <body class="mc-body pb-0" style="background-color: transparent; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden;">
   <div class="mc-global-media-bg">
     <video autoplay loop muted playsinline poster="assets/images/hero-optimized.jpg">
@@ -277,61 +87,48 @@
   <header class="top-app-bar">
     <div class="left">
       <span class="material-symbols-outlined">menu</span>
-
     </div>
     <div class="logo">MIDNIGHT CLUB</div>
   </header>
 
-  <main class="editorial-main" style="padding-top: 60px;">
+  <main class="editorial-main">
     
-    <div class="carta-search">
-      <div class="promo-title">20% OFF EN EFECTIVO</div>
-      <div class="search-input-wrapper">
-        <span class="material-symbols-outlined search-icon">search</span>
-        <input type="text" id="searchInput" placeholder="BUSCAR TRAGO..." autocomplete="off">
-      </div>
+    <div class="search-input-wrapper">
+      <span class="material-symbols-outlined" style="color: #666;">search</span>
+      <input type="text" id="searchInput" placeholder="BUSCAR BEBIDA...">
     </div>
 
-    <div class="carta-categories">
-      <div id="loading" class="loading-spinner">CARGANDO MENU...</div>
-      <div id="noResults" class="no-results">NO SE ENCONTRARON RESULTADOS</div>
-      <div id="dynamicList"></div>
+    <nav class="editorial-nav" id="dynamicList">
+      <!-- Loaded dynamically via carta.js -->
+    </nav>
+    
+    <div id="noResults" style="display: none; padding: 4rem; text-align: center; color: #666; font-family: 'Space Grotesk'; font-size: 2rem; letter-spacing: 0.1em; text-transform: uppercase;">
+      NO SE ENCONTRARON RESULTADOS
     </div>
 
   </main>
 
-  <footer class="editorial-footer">
-    <div class="footer-meta">
-      <span>MC-SS26 ©</span>
-      <span class="internal">MENU // INTERNAL USE</span>
-    </div>
-  </footer>
-
-  <div class="vertical-rail">
-    <div class="vertical-rail-text">STRUCTURAL NOIR // SPRING SUMMER 2026 // BEVERAGE SYSTEM</div>
-  </div>
-
-  <div id="priceModalOverlay" class="price-modal-overlay" onclick="closePriceModal()">
-    <div class="price-card" onclick="event.stopPropagation()">
-      <h2 id="modalTitle" class="modal-title">--</h2>
-      <p id="modalDesc" class="modal-desc">--</p>
+  <!-- Modals -->
+  <div class="overlay" id="overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:100; align-items:center; justify-content:center;">
+    <div class="modal" style="background:#0a0a0a; padding:3rem; border:1px solid #333; width:100%; max-width:500px; text-align:center; font-family:'Space Grotesk';">
+      <div class="modal-title" id="modalTitle" style="font-size:2rem; font-weight:700; margin-bottom:1rem; text-transform:uppercase;"></div>
+      <div id="modalDesc" style="font-family:'Inter'; color:#888; margin-bottom:2rem;"></div>
       
-      <div class="price-row">
-        <span class="price-label">LISTA / TARJETA</span>
-        <span id="modalPriceList" class="price-value">$0</span>
+      <div class="price-box" style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding-bottom:1rem; margin-bottom:1rem;">
+        <span style="color:#666; letter-spacing:0.1em;">EFECTIVO (20% OFF)</span>
+        <span class="price-cash" id="modalCash" style="font-size:1.5rem;"></span>
       </div>
-
-      <div class="price-highlight">
-        <span class="price-label">EFECTIVO</span>
-        <div id="modalPriceCash" class="price-value">$0</div>
+      
+      <div class="price-box" style="display:flex; justify-content:space-between; margin-bottom:2rem;">
+        <span style="color:#666; letter-spacing:0.1em;">TARJETA / MP</span>
+        <span class="price-card" id="modalCard" style="font-size:1.5rem;"></span>
       </div>
-
-      <button class="btn-close-modal" onclick="closePriceModal()">CERRAR</button>
+      
+      <button class="btn btn-primary" id="btnCloseModal" style="width:100%; background:#fff; color:#000; font-weight:bold; padding:1rem; border:none; cursor:pointer;">CERRAR</button>
     </div>
   </div>
 
   <div id="mc-login-gate-container"></div>
-
   <script type="module" src="assets/js/carta.js"></script>
 </body>
 </html>

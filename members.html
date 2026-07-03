@@ -1,196 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Solicitar ID - Midnight Club</title>
-  <meta name="description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta name="keywords" content="club privado, salta, midnight club, membresias">
-  <meta property="og:title" content="Membresías - Midnight Club">
-  <meta property="og:description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta property="og:image" content="https://midnightclub.com.ar/assets/images/hero-optimized.jpg">
-  <meta property="og:type" content="website">
+  <title>Solicitar ID - Midnight Club Salta Argentina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="description" content="Solicita tu Membresía para Midnight Club." />
+  
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  
+
   <link rel="stylesheet" href="assets/css/tokens.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/base.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/components.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/utils.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/layout.css?v=rebrand3">
-  
 
   <style>
-    /* Structural Noir - Form Styles */
-    .form-container {
-      padding: 0 1.5rem 8rem;
-      max-width: 600px;
-      margin: 0 auto;
+    /* Structural Noir - Form Overrides */
+    .noir-form-group {
+      width: 100%;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 3rem 1.5rem;
+      transition: background-color 0.3s;
     }
-    .form-header {
-      margin-bottom: 3rem;
+    .noir-form-group:focus-within {
+      background-color: rgba(255,255,255,0.02);
     }
-    .form-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.5rem, 8vw, 5rem);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: -0.05em;
-      color: #ffffff;
-      line-height: 1;
-      margin: 0 0 0.5rem;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-    .form-subtitle {
+    .noir-label {
+      display: block;
       font-family: 'Inter', sans-serif;
       font-size: 0.625rem;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      color: #919191;
-    }
-    
-    .form-group {
-      margin-bottom: 2.5rem;
-      position: relative;
-    }
-    .mc-label-editorial {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.625rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #C6C6C6;
       margin-bottom: 0.5rem;
+      opacity: 0.5;
     }
-    .mc-input-editorial {
+    .noir-input {
       width: 100%;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      outline: none;
+    }
+    .noir-input::placeholder {
+      color: rgba(255,255,255,0.1);
+    }
+    .noir-btn {
+      width: 100%;
+      padding: 4rem 1.5rem;
       background: transparent;
       border: none;
       border-bottom: 1px solid #474747;
-      border-radius: 0;
-      color: #ffffff;
+      color: #fff;
+      text-align: left;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.25rem;
-      padding: 0.5rem 0;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .mc-input-editorial:focus {
-      border-color: #ffffff;
-    }
-    .mc-input-editorial::placeholder {
-      color: #474747;
-    }
-    
-    .mc-input-editorial.input-error { border-bottom-color: #ff3333; }
-    .mc-input-editorial.input-success { border-bottom-color: #33ff33; }
-    
-    .input-hint, .input-helper {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.625rem;
-      color: #919191;
-      margin-top: 0.5rem;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 4rem);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .input-hint.error { color: #ff3333; }
-    .input-hint.success { color: #33ff33; }
-    
-    .checkbox-group {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 3rem;
-    }
-    .checkbox-group input[type="checkbox"] {
-      appearance: none;
-      width: 1.25rem;
-      height: 1.25rem;
-      border: 1px solid #474747;
-      background: transparent;
-      border-radius: 0;
+      letter-spacing: -0.05em;
       cursor: pointer;
-      position: relative;
-      margin-top: 0.125rem;
+      transition: background-color 0.3s, color 0.3s;
     }
-    .checkbox-group input[type="checkbox"]:checked {
-      background: #ffffff;
-      border-color: #ffffff;
+    .noir-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
-    .checkbox-group label {
+    .noir-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .checkbox-group-noir {
+      padding: 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .checkbox-group-noir label {
       font-family: 'Inter', sans-serif;
       font-size: 0.75rem;
-      line-height: 1.5;
-      color: #919191;
-      cursor: pointer;
-    }
-    .checkbox-group label a {
-      color: #ffffff;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-    
-    .mc-btn-editorial {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      padding: 1.5rem;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
+      color: #999;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: -0.02em;
-      cursor: pointer;
-      transition: opacity 0.2s;
     }
-    .mc-btn-editorial:hover { opacity: 0.9; }
-    .mc-btn-editorial:disabled { opacity: 0.5; cursor: not-allowed; }
-    
-    .error-text {
-      color: #ff3333;
+    .error-text, .success-text {
+      padding: 2rem 1.5rem;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.875rem;
       font-weight: 700;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 1.5rem;
       display: none;
-      border: 1px solid #ff3333;
-      padding: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .success-text {
-      color: #33ff33;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      display: none;
-      border: 1px solid #33ff33;
-      padding: 1rem;
-    }
-    
-    .loader {
-      display: none;
-      width: 14px;
-      height: 14px;
-      border: 2px solid #000;
-      border-bottom-color: transparent;
-      border-radius: 50%;
-      animation: rotation 1s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    @keyframes rotation {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    .error-text { color: #ff3333; }
+    .success-text { color: #33ff33; }
   </style>
 </head>
+
 <body class="mc-body pb-0" style="background-color: transparent; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden;">
   <div class="mc-global-media-bg">
     <video autoplay loop muted playsinline poster="assets/images/hero-optimized.jpg">
@@ -202,76 +119,56 @@
   <header class="top-app-bar">
     <div class="left">
       <span class="material-symbols-outlined">menu</span>
-
     </div>
     <div class="logo">MIDNIGHT CLUB</div>
   </header>
 
-  <main class="editorial-main" style="padding-top: 100px;">
-    
-    <div class="form-container">
-      <div class="form-header">
-        <h1 class="form-title">SOLICITAR ID</h1>
-        <div class="form-subtitle">MEMBER REQUEST // 001</div>
+  <main class="editorial-main" style="padding-top: 60px;">
+    <form id="memberForm" style="width: 100%;">
+      
+      <div class="noir-form-group">
+        <label class="noir-label">01 // NOMBRE COMPLETO</label>
+        <input type="text" id="nombre" class="noir-input" placeholder="NOMBRE Y APELLIDO" required autocapitalize="words" />
       </div>
 
-      <form id="memberForm">
-        
-        <div class="form-group">
-          <label class="mc-label-editorial">NOMBRE COMPLETO</label>
-          <input type="text" id="nombre" class="mc-input-editorial" placeholder="NOMBRE Y APELLIDO" required autocapitalize="words" />
-        </div>
+      <div class="noir-form-group">
+        <label class="noir-label">02 // FECHA DE NACIMIENTO (DD/MM/AAAA)</label>
+        <input type="tel" id="nacimiento" class="noir-input" placeholder="01/01/2000" maxlength="10" required />
+      </div>
 
-        <div class="form-group">
-          <label class="mc-label-editorial">FECHA DE NACIMIENTO</label>
-          <input type="tel" id="nacimiento" class="mc-input-editorial" placeholder="DD/MM/AAAA" maxlength="10" required aria-describedby="nacimiento-hint" />
-          <span id="nacimiento-hint" class="input-helper">FORMATO: DD/MM/AAAA</span>
-        </div>
+      <div class="noir-form-group">
+        <label class="noir-label">03 // INSTAGRAM</label>
+        <input type="text" id="instagram" class="noir-input" placeholder="@USUARIO" required />
+      </div>
 
-        <div class="form-group">
-          <label class="mc-label-editorial">INSTAGRAM</label>
-          <input type="text" id="instagram" class="mc-input-editorial" placeholder="@USUARIO" required />
-        </div>
+      <div class="noir-form-group">
+        <label class="noir-label">04 // WHATSAPP</label>
+        <input type="tel" id="telefono" class="noir-input" placeholder="EJ: 387 123 4567" required />
+      </div>
 
-        <div class="form-group">
-          <label class="mc-label-editorial">WHATSAPP</label>
-          <input type="tel" id="telefono" class="mc-input-editorial" placeholder="EJ: 387 123 4567" required />
-        </div>
+      <div class="noir-form-group">
+        <label class="noir-label">05 // CORREO ELECTRÓNICO</label>
+        <input type="email" id="email" class="noir-input" placeholder="EMAIL@EJEMPLO.COM" required />
+      </div>
 
-        <div class="form-group">
-          <label class="mc-label-editorial">CORREO ELECTRÓNICO</label>
-          <input type="email" id="email" class="mc-input-editorial" placeholder="EMAIL@EJEMPLO.COM" required />
-        </div>
+      <div class="checkbox-group-noir">
+        <input type="checkbox" id="legalCheck" required style="width: 20px; height: 20px; accent-color: #fff;">
+        <label for="legalCheck">
+          DECLARO SER MAYOR DE 18 AÑOS Y ACEPTO LOS TÉRMINOS
+        </label>
+      </div>
 
-        <div class="checkbox-group">
-          <input type="checkbox" id="legalCheck" required>
-          <label for="legalCheck">
-            DECLARO SER MAYOR DE 18 AÑOS Y ACEPTO LOS <a href="legales.html">TÉRMINOS Y CONDICIONES</a>.
-          </label>
-        </div>
+      <div id="errorMsg" class="error-text"></div>
+      <div id="successMsg" class="success-text">SOLICITUD ENVIADA CORRECTAMENTE</div>
 
-        <div id="errorMsg" class="error-text"></div>
-        <div id="successMsg" class="success-text">✅ SOLICITUD ENVIADA CORRECTAMENTE</div>
+      <button type="submit" id="btnSubmit" class="noir-btn">
+        [ ENVIAR SOLICITUD ]
+      </button>
 
-        <button type="submit" id="btnSubmit" class="mc-btn-editorial" aria-label="Enviar formulario de solicitud">
-          <span class="loader" id="loader"></span> ENVIAR SOLICITUD
-        </button>
-      </form>
-    </div>
-
+    </form>
   </main>
 
-  <footer class="editorial-footer">
-    <div class="footer-meta">
-      <span>MC-SS26 ©</span>
-      <span class="internal">MEMBERSHIP // INTERNAL USE</span>
-    </div>
-  </footer>
-
-  <div class="vertical-rail">
-    <div class="vertical-rail-text">STRUCTURAL NOIR // SPRING SUMMER 2026 // IDENTITY SYSTEM</div>
-  </div>
-
-  <script type="module" src="assets/js/members.js?v=2"></script>
+  <div id="mc-login-gate-container"></div>
+  <script type="module" src="assets/js/register.js"></script>
 </body>
 </html>

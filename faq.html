@@ -1,108 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Preguntas Frecuentes - Midnight Club Salta Argentina</title>
-  <meta name="description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta name="keywords" content="club privado, salta, midnight club, membresias">
-  <meta property="og:title" content="Preguntas Frecuentes - Midnight Club">
-  <meta property="og:description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta property="og:image" content="https://midnightclub.com.ar/assets/images/hero-optimized.jpg">
-  <meta property="og:type" content="website">
+  <title>FAQ - Midnight Club Salta Argentina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="description" content="Preguntas frecuentes sobre ingresos, membresías y funcionamiento de Midnight Club en Salta." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://midnightclub.com.ar/faq" />
+
+  <meta property="og:title" content="FAQ - Midnight Club Salta Argentina" />
+  <meta property="og:description" content="Preguntas frecuentes sobre ingresos y membresías." />
+  <meta property="og:url" content="https://midnightclub.com.ar/faq.html" />
+  <meta property="og:image" content="https://midnightclub.com.ar/assets/images/hero.jpg" />
+
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  
+
+  <!-- Core Layout CSS -->
   <link rel="stylesheet" href="assets/css/tokens.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/base.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/components.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/utils.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/layout.css?v=rebrand3">
-  
 
   <style>
-    /* Structural Noir - FAQ Styles */
-    .faq-container {
-      padding-bottom: 8rem;
+    .faq-answer-content {
+      display: none; 
+      margin-top: 2rem; 
+      font-family: 'Inter', sans-serif; 
+      font-size: 1rem; 
+      line-height: 1.6; 
+      color: #999;
+      text-transform: none;
+      letter-spacing: normal;
     }
-    
-    .faq-section-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.625rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: #919191;
-      padding: 3rem 1.5rem 0.5rem;
-      border-bottom: 1px solid #474747;
-    }
-    
-    .faq-item {
-      border-bottom: 1px solid #2a2a2a;
-    }
-    
-    .faq-question {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem;
-      cursor: pointer;
-      background: transparent;
-      transition: background 0.2s;
-    }
-    .faq-question:hover { background: #1a1a1a; }
-    
-    .faq-question h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.25rem, 3vw, 2rem);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: -0.03em;
-      color: #ffffff;
-      margin: 0;
-      line-height: 1.2;
-    }
-    
-    .faq-toggle {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      color: #ffffff;
-      transition: transform 0.3s;
-    }
-    .faq-item.active .faq-toggle {
-      transform: rotate(45deg);
-    }
-    
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      padding: 0 1.5rem;
-    }
-    .faq-item.active .faq-answer {
-      max-height: 500px;
-      padding-bottom: 1.5rem;
-    }
-    
-    .faq-answer p {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      line-height: 1.6;
-      color: #C6C6C6;
-      margin: 0;
-      max-width: 40rem;
-    }
-    .faq-answer a {
-      color: #ffffff;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-    .faq-answer strong {
-      color: #ffffff;
+    .faq-item.active .faq-answer-content {
+      display: block;
+      animation: fadeIn 0.3s ease;
     }
   </style>
 </head>
+
 <body class="mc-body pb-0" style="background-color: transparent; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden;">
   <div class="mc-global-media-bg">
     <video autoplay loop muted playsinline poster="assets/images/hero-optimized.jpg">
@@ -114,91 +56,54 @@
   <header class="top-app-bar">
     <div class="left">
       <span class="material-symbols-outlined">menu</span>
-
     </div>
     <div class="logo">MIDNIGHT CLUB</div>
   </header>
 
-  <main class="editorial-main" style="padding-top: 60px;">
-    
-    <div class="faq-container">
-      <div class="faq-section-title">01 // GENERAL & ACCESOS</div>
+  <main class="editorial-main">
+    <nav class="editorial-nav">
       
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cómo adquiero mis ingresos?</h3>
-          <span class="faq-toggle">+</span>
+      <a href="#" class="editorial-nav-link faq-item">
+        <span class="nav-meta">01 // GENERAL & ACCESOS</span>
+        <h2 class="nav-title" style="font-size: clamp(1.5rem, 6vw, 4rem);">¿CÓMO ADQUIERO MIS INGRESOS?</h2>
+        <div class="faq-answer-content">
+          Los tickets para el público general se adquieren exclusivamente a través de nuestra sección <span style="color:#fff;">ACCESOS</span>, que te redirigirá a la plataforma oficial. Recomendamos adquirir tus ingresos con anticipación ya que la capacidad es limitada.
         </div>
-        <div class="faq-answer">
-          <p>Los tickets para el público general se adquieren exclusivamente a través de nuestra sección <a href="accesos.html">ACCESOS</a>, que te redirigirá a la plataforma oficial de Passline. Recomendamos adquirir tus ingresos con anticipación ya que la capacidad es limitada.</p>
-        </div>
-      </div>
-      
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cuál es el horario de apertura?</h3>
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Nuestras puertas abren a las 00:00hs. El horario límite para ingresos bonificados (Members o listas) suele ser hasta las 02:00hs o 03:00hs, dependiendo del evento.</p>
-        </div>
-      </div>
+      </a>
 
+      <a href="#" class="editorial-nav-link faq-item">
+        <span class="nav-meta">01 // GENERAL & ACCESOS</span>
+        <h2 class="nav-title" style="font-size: clamp(1.5rem, 6vw, 4rem);">¿CUÁL ES EL HORARIO DE APERTURA?</h2>
+        <div class="faq-answer-content">
+          Nuestras puertas abren a las 00:00hs. El horario límite para ingresos bonificados (Members o listas) suele ser hasta las 02:00hs o 03:00hs, dependiendo del evento.
+        </div>
+      </a>
 
-      <div class="faq-section-title">02 // MEMBERS & COMUNIDAD</div>
+      <a href="#" class="editorial-nav-link faq-item">
+        <span class="nav-meta">02 // MEMBERS & COMUNIDAD</span>
+        <h2 class="nav-title" style="font-size: clamp(1.5rem, 6vw, 4rem);">¿QUÉ BENEFICIOS TIENE SER MEMBER?</h2>
+        <div class="faq-answer-content">
+          Los Members de Midnight Club acceden a beneficios exclusivos como: Ingresos sin cargo (con horario límite), acceso a compra de tickets ocultos o con descuento, prioridad en reservas de mesas VIP y acceso a nuestro panel digital.
+        </div>
+      </a>
 
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Qué beneficios tiene ser Member?</h3>
-          <span class="faq-toggle">+</span>
+      <a href="#" class="editorial-nav-link faq-item">
+        <span class="nav-meta">02 // MEMBERS & COMUNIDAD</span>
+        <h2 class="nav-title" style="font-size: clamp(1.5rem, 6vw, 4rem);">¿CÓMO SOLICITO MI MEMBER ID?</h2>
+        <div class="faq-answer-content">
+          Si aún no eres socio, puedes aplicar completando el formulario en la sección <span style="color:#fff;">SOLICITAR ID</span>. Las solicitudes son evaluadas por nuestra administración y la aprobación no es automática.
         </div>
-        <div class="faq-answer">
-          <p>Los Members de Midnight Club acceden a beneficios exclusivos como: Ingresos sin cargo (con horario límite), acceso a compra de tickets ocultos o con descuento, prioridad en reservas de mesas VIP y acceso a nuestro panel digital.</p>
-        </div>
-      </div>
+      </a>
 
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cómo solicito mi Member ID?</h3>
-          <span class="faq-toggle">+</span>
+      <a href="#" class="editorial-nav-link faq-item">
+        <span class="nav-meta">03 // SOPORTE TÉCNICO</span>
+        <h2 class="nav-title" style="font-size: clamp(1.5rem, 6vw, 4rem);">OLVIDÉ MI CONTRASEÑA O MI ID.</h2>
+        <div class="faq-answer-content">
+          En la pantalla de inicio de sesión, haz clic en el enlace "¿Olvidé mi ID / Contraseña?". Ingresa el email con el que te registraste y el sistema te enviará una nueva contraseña temporal.
         </div>
-        <div class="faq-answer">
-          <p>Si aún no eres socio, puedes aplicar completando el formulario en la sección <a href="members.html">SOLICITAR ID</a>. Las solicitudes son evaluadas por nuestra administración y la aprobación no es automática.</p>
-        </div>
-      </div>
+      </a>
 
-      <div class="faq-section-title">03 // SOPORTE TÉCNICO</div>
-
-      <div class="faq-item active">
-        <div class="faq-question">
-          <h3>Ya tenía un ID antes de la nueva web. ¿Cómo ingreso?</h3>
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Si ya eras socio registrado, tu cuenta ha sido migrada. Para tu primer ingreso, utiliza tu <strong>Member ID actual</strong> (ej: MC-1234) tanto en el campo de USUARIO como en el de CONTRASEÑA. Una vez dentro, podrás cambiar tu contraseña por seguridad.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>Olvidé mi contraseña o mi ID.</h3>
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>En la pantalla de inicio de sesión, haz clic en el enlace "¿Olvidé mi ID / Contraseña?". Ingresa el email con el que te registraste y el sistema te enviará una nueva contraseña temporal.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cómo cambio mi contraseña?</h3>
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Una vez que inicies sesión, dentro de tu panel de Member, encontrarás una opción al final de la página que dice "cambiar contraseña". Al guardarla, el sistema cerrará tu sesión para que ingreses con la nueva clave.</p>
-        </div>
-      </div>
-    </div> 
+    </nav>
   </main>
 
   <footer class="editorial-footer">

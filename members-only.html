@@ -1,22 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8" />
-  <title>Panel de Miembro - Midnight Club VIP</title>
-  <meta name="description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta name="keywords" content="club privado, salta, midnight club, membresias">
-  <meta property="og:title" content="Portal de Miembros - Midnight Club">
-  <meta property="og:description" content="Midnight Club - Club Privado en Salta. Exclusividad, beneficios y la mejor experiencia.">
-  <meta property="og:image" content="https://midnightclub.com.ar/assets/images/hero-optimized.jpg">
-  <meta property="og:type" content="website">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="robots" content="noindex, nofollow" />
+  <meta charset="UTF-8">
+  <title>Dashboard - Midnight Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow">
 
-  <!-- Performance: Preload & Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/images/hero-optimized.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="assets/css/tokens.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/base.css?v=rebrand2">
@@ -24,23 +17,99 @@
   <link rel="stylesheet" href="assets/css/utils.css?v=rebrand2">
   <link rel="stylesheet" href="assets/css/layout.css?v=rebrand3">
 
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+  <style>
+    .noir-dashboard-header {
+      padding: 6rem 1.5rem 3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+    }
+    .noir-dashboard-welcome {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    .noir-dashboard-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 10vw, 7.5rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .noir-dashboard-id {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: #999;
+      letter-spacing: 0.2em;
+    }
+    
+    .noir-section-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: #666;
+      padding: 3rem 1.5rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .qr-modal-noir {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    .qr-modal-noir h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .qr-box {
+      background: #fff;
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .qr-close-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.5);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      padding: 1rem 4rem;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .qr-close-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+  </style>
 
 </head>
 
-<body class="mc-body flex flex-col items-center justify-center min-h-screen" style="background-color: transparent;">
+<body class="mc-body pb-0" style="background-color: transparent; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden;">
   <div class="mc-global-media-bg">
     <video autoplay loop muted playsinline poster="assets/images/hero-optimized.jpg">
       <source src="assets/videos/bg.mp4" type="video/mp4">
     </video>
     <div class="mc-global-media-overlay"></div>
   </div>
-
 
   <header class="top-app-bar">
     <div class="left">
@@ -49,79 +118,48 @@
     <div class="logo">MIDNIGHT CLUB</div>
   </header>
 
-  <main class="mc-page">
+  <main class="editorial-main" style="padding-top: 0; padding-bottom: 0;">
 
-    <div class="member-header">
-      <div class="member-welcome">Bienvenido</div>
-      <h1 id="memberName" class="member-name">MEMBER</h1>
-      <div id="memberID" class="member-id">ID: MC-XXXX</div>
+    <div class="noir-dashboard-header">
+      <div class="noir-dashboard-welcome">ACCESS GRANTED</div>
+      <h1 id="memberName" class="noir-dashboard-name">MEMBER</h1>
+      <div id="memberID" class="noir-dashboard-id">ID: MC-XXXX</div>
     </div>
 
-    <div class="mc-page-title">MIS ENTRADAS</div>
-    <div id="eventsContainer" class="w-full flex flex-col gap-4 mb-10 text-center">
-       <span class="loader" style="display:inline-block; margin: 2rem auto;"></span>
-    </div>
+    <div class="noir-section-title">01 // MIS ENTRADAS</div>
+    
+    <nav class="editorial-nav" id="eventsContainer">
+       <div style="padding: 3rem 1.5rem; color: #666;">CARGANDO ACCESOS...</div>
+    </nav>
+
+    <div class="noir-section-title" style="margin-top: 2rem;">02 // BENEFICIOS ACTIVOS</div>
+    <nav class="editorial-nav">
+      <a id="card_mem_0000" href="#" class="editorial-nav-link" style="display:none;">
+        <span class="nav-meta">BENEFICIO EXCLUSIVO</span>
+        <h2 id="title_mem_0000" class="nav-title" style="font-size: clamp(2rem, 5vw, 4rem);">--</h2>
+      </a>
+      <a id="card_mem_plus" href="#" class="editorial-nav-link" style="display:none;">
+        <span class="nav-meta">BENEFICIO EXCLUSIVO</span>
+        <h2 id="title_mem_plus" class="nav-title" style="font-size: clamp(2rem, 5vw, 4rem);">--</h2>
+      </a>
+      <a id="card_mem_vip" href="#" class="editorial-nav-link" style="display:none;">
+        <span class="nav-meta">BENEFICIO EXCLUSIVO</span>
+        <h2 id="title_mem_vip" class="nav-title" style="font-size: clamp(2rem, 5vw, 4rem);">--</h2>
+      </a>
+    </nav>
 
     <!-- Modal for QR -->
-    <div id="qrModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; align-items:center; justify-content:center; padding: 2rem;">
-      <h2 id="qrEventTitle" style="margin-bottom: 1rem; color: #fff; font-weight: bold; text-align: center; text-transform: uppercase;"></h2>
-      <div id="qrCodeWrapper" style="background: white; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;"></div>
-      <button id="qrModalClose" class="mc-gate-btn" style="max-width: 200px;">CERRAR</button>
+    <div id="qrModal" class="qr-modal-noir">
+      <h2 id="qrEventTitle"></h2>
+      <div id="qrCodeWrapper" class="qr-box"></div>
+      <button id="qrModalClose" class="qr-close-btn">CERRAR</button>
     </div>
-
-    <div class="mc-page-title">BENEFICIOS ACTIVOS</div>
-
-
-
-    <div id="card_mem_0000" class="mc-item-row is-visible" style="display:none;">
-      <a href="#" target="_blank" class="mc-item-link block w-full h-full">
-        <h2 id="title_mem_0000" class="mc-item-title">--</h2>
-        <div class="mc-item-details"><span>--</span></div>
-        <div class="mc-item-arrow">→</div>
-      </a>
-    </div>
-
-    <div id="card_mem_plus" class="mc-item-row is-visible" style="display:none;">
-      <a href="#" target="_blank" class="mc-item-link block w-full h-full">
-        <h2 id="title_mem_plus" class="mc-item-title">--</h2>
-        <div class="mc-item-details"><span>--</span></div>
-        <div class="mc-item-arrow">→</div>
-      </a>
-    </div>
-
-    <div id="card_mem_vip" class="mc-item-row is-visible" style="display:none;">
-      <a href="#" target="_blank" class="mc-item-link block w-full h-full">
-        <h2 id="title_mem_vip" class="mc-item-title">--</h2>
-        <div class="mc-item-details"><span>--</span></div>
-        <div class="mc-item-arrow">→</div>
-      </a>
-    </div>
-
-
-
-
-    <div class="security-section">
-      <span class="security-toggle" id="toggleSecurity">cambiar contraseña</span>
-      <div class="password-form" id="passwordForm">
-        <input type="password" id="currentPass" class="pass-input mb-10" placeholder="CONTRASEÑA ACTUAL" maxlength="10">
-        <input type="password" id="newPass" class="pass-input" placeholder="NUEVA CONTRASEÑA" maxlength="10">
-        <button id="btnSavePass" class="btn-save-pass" aria-label="Actualizar contraseña">ACTUALIZAR</button>
-      </div>
-    </div>
-
-    <button id="btnLogout" class="btn-logout" aria-label="Cerrar sesión">CERRAR SESIÓN</button>
 
   </main>
 
-  <footer class="editorial-footer">
-    <div class="footer-meta">
-      <span>MC-SS26 ©</span>
-      <span class="internal">MEMBER DASHBOARD</span>
-    </div>
-  </footer>
+  <!-- Sidebar & Password Modals (hidden by default) -->
+  <!-- ... remaining modals from shared-ui will be injected automatically ... -->
 
   <script type="module" src="assets/js/members-only.js"></script>
-
 </body>
-
 </html>
