@@ -6,7 +6,10 @@ import { verify } from "https://deno.land/x/djwt@v2.8/mod.ts";
 const ALLOWED_ORIGINS = [
   "https://midnightclub.com.ar",
   "https://www.midnightclub.com.ar",
-  "https://mcss26.github.io"
+  "https://mcss26.github.io",
+  "https://midnightclub-v2-chi.vercel.app",
+  "https://midnightclub-v2-ezejcs02s-projects.vercel.app",
+  "https://midnightclub-v2-git-main-ezejcs02s-projects.vercel.app"
 ];
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
