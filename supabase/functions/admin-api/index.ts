@@ -157,19 +157,23 @@ serve(async (req) => {
 
     // --- 2. GET STATS ---
     if (action === "get_stats") {
-      const { count: membersCount } = await supabase.from("members").select("*", { count: "exact", head: true });
-      const { count: validCount } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("status", "valid");
-      const { count: usedCount } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("status", "used");
-      const { count: itemsCount } = await supabase.from("menu_items").select("*", { count: "exact", head: true });
-
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      
+      const { count: qrPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).gte("created_at", startOfMonth);
+      const { count: qrMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).gte("created_at", startOfMonth);
+      
+      const { count: ingresosEscaneadosMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startOfMonth);
+      const { count: ingresosEscaneadosPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startOfMonth);
+      
       return new Response(
         JSON.stringify({
           success: true,
           stats: {
-            members: membersCount || 0,
-            validTickets: validCount || 0,
-            usedTickets: usedCount || 0,
-            menuItems: itemsCount || 0
+            qrPagos: qrPagos || 0,
+            qrMembers: qrMembers || 0,
+            ingresosEscaneados: (ingresosEscaneadosMembers || 0) + (ingresosEscaneadosPagos || 0),
+            ingresosRechazados: 0 // No backend table for rejected scans yet
           }
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }

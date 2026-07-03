@@ -102,10 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const data = await adminFetch('get_stats');
       if (data.success) {
-        document.getElementById('statMembers').textContent = data.stats.members;
-        document.getElementById('statValid').textContent = data.stats.validTickets;
-        document.getElementById('statUsed').textContent = data.stats.usedTickets;
-        document.getElementById('statCarta').textContent = data.stats.menuItems;
+        document.getElementById('statQRPagos').textContent = data.stats.qrPagos;
+        document.getElementById('statQRMembers').textContent = data.stats.qrMembers;
+        document.getElementById('statIngresosEscaneados').textContent = data.stats.ingresosEscaneados;
+        document.getElementById('statIngresosRechazados').textContent = data.stats.ingresosRechazados;
       }
     } catch(e) { console.error(e); }
 
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadEventStats() {
     if (!eventStatsTableBody) return;
     eventStatsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
+    
     const data = await adminFetch('list_events');
     if (data.success) {
       eventStatsTableBody.innerHTML = '';
@@ -127,8 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.innerHTML = `
           <td><strong>${escapeHtml(ev.title)}</strong></td>
           <td>${escapeHtml(dateStr)}</td>
-          <td>${stats.memberUsed} / ${stats.memberEmitted}<br><small style="color:#888">escaneadas / emitidas</small></td>
-          <td>${stats.paidUsed} / ${stats.paidSold}<br><small style="color:#888">escaneadas / vendidas</small></td>
+          <td>${stats.memberEmitted}</td>
+          <td>${stats.paidSold}</td>
           <td>${escapeHtml(fmtARS(stats.revenue))}</td>
         `;
         eventStatsTableBody.appendChild(tr);
