@@ -192,13 +192,8 @@ function renderMenu() {
                 itemPrices.className = 'item-prices';
                 itemPrices.textContent = fmtCard;
 
-                const plusIcon = document.createElement('div');
-                plusIcon.className = 'plus-icon';
-                plusIcon.textContent = '+';
-
                 itemDiv.appendChild(itemLeft);
                 itemDiv.appendChild(itemPrices);
-                itemDiv.appendChild(plusIcon);
 
                 content.appendChild(itemDiv);
             });
