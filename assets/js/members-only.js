@@ -151,7 +151,7 @@ async function loadTickets() {
       meta.textContent = `0${groupIdx + 1} // ${group.dateStr}`;
 
       const title = document.createElement('h2');
-      title.className = 'nav-title';
+      title.className = 'nav-title-sm';
       title.textContent = group.title;
       
       const btnWrap = document.createElement('div');

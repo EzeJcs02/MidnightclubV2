@@ -123,7 +123,7 @@ function renderMenu() {
             navMeta.textContent = `0${cat.id} // CATEGORY`;
 
             const navTitle = document.createElement('h2');
-            navTitle.className = 'nav-title';
+            navTitle.className = 'nav-title-sm';
             navTitle.textContent = cat.name;
 
             const content = document.createElement('div');

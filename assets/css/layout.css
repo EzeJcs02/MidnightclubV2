@@ -794,6 +794,11 @@
   font-size: clamp(3rem, 10vw, 7.5rem); line-height: 1; text-transform: uppercase;
   letter-spacing: -0.08em; margin: 0;
 }
+.nav-title-sm {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: clamp(2rem, 5vw, 4rem); line-height: 1; text-transform: uppercase;
+  letter-spacing: -0.05em; margin: 0; word-wrap: break-word; overflow-wrap: break-word;
+}
 
 .secondary-info {
   padding: 1.5rem; display: grid; grid-template-columns: 1fr; gap: 3rem; border-bottom: 1px solid #474747;
