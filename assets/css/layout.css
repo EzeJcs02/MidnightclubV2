@@ -420,12 +420,11 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-end;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   opacity: 0;
   transition: opacity 0.4s ease;
-  overflow-y: auto;
 }
 #mc-login-gate.show { opacity: 1; }
 #mc-login-gate.show #mc-login-card { transform: translateY(0); }
@@ -445,41 +444,52 @@
 
 .mc-gate-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(3rem, 10vw, 7.5rem);
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
   line-height: 1;
   color: #fff;
-  padding: 4rem 1.5rem 2rem;
+  padding: 2.5rem 1.5rem 1.5rem;
   border-bottom: 1px solid #474747;
 }
 
 .mc-gate-input {
   width: 100%;
-  padding: 3rem 1.5rem;
-  background: transparent;
+  padding: 1.5rem 1.5rem;
+  background: #0a0a0a;
   border: none;
   border-bottom: 1px solid rgba(255,255,255,0.12);
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 7vw, 5rem);
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.05em;
   outline: none;
   transition: background 0.2s, border-color 0.2s;
   border-radius: 0;
   display: block;
+  -webkit-text-fill-color: #fff;
+  caret-color: #fff;
 }
 .mc-gate-input::placeholder {
-  color: rgba(255,255,255,0.15);
-  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  font-weight: 400;
+  -webkit-text-fill-color: rgba(255,255,255,0.2);
 }
 .mc-gate-input:focus {
-  background: rgba(255,255,255,0.03);
+  background: #111;
   border-bottom-color: #fff;
+}
+/* Override browser autofill yellow/white backgrounds */
+.mc-gate-input:-webkit-autofill,
+.mc-gate-input:-webkit-autofill:hover,
+.mc-gate-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
+  -webkit-text-fill-color: #fff !important;
+  border-bottom-color: rgba(255,255,255,0.3) !important;
 }
 
 .password-group { position: relative; width: 100%; }
@@ -492,7 +502,7 @@
   border: none;
   color: rgba(255,255,255,0.3);
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   padding: 0;
   line-height: 1;
   transition: color 0.2s;
@@ -501,18 +511,18 @@
 
 .mc-gate-btn {
   width: 100%;
-  padding: 3.5rem 1.5rem;
+  padding: 1.8rem 1.5rem;
   background: #fff;
   color: #000;
   border: none;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 900;
-  font-size: clamp(2rem, 7vw, 5rem);
-  letter-spacing: -0.03em;
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
+  letter-spacing: 0.05em;
   cursor: pointer;
   text-transform: uppercase;
   border-radius: 0;
-  text-align: left;
+  text-align: center;
   transition: background 0.2s, color 0.2s;
   position: relative;
   overflow: hidden;
@@ -524,14 +534,14 @@
 
 .mc-gate-close {
   width: 100%;
-  padding: 2rem 1.5rem;
+  padding: 1.2rem 1.5rem;
   background: transparent;
   border: none;
   border-top: 1px solid #474747;
   color: rgba(255,255,255,0.3);
   font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   cursor: pointer;
   text-align: center;
@@ -542,13 +552,13 @@
 .mc-link-recovery {
   display: block;
   width: 100%;
-  padding: 1.5rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.3);
   text-decoration: none;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   transition: color 0.2s;
@@ -557,12 +567,13 @@
 
 .mc-gate-error {
   font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #ff3333;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   display: none;
+  background: rgba(255,51,51,0.08);
 }
 .gate-view { width: 100%; }
 .hidden-view { display: none; }
