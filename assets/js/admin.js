@@ -97,10 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- DASHBOARD ---
   const eventStatsTableBody = document.getElementById('eventStatsTableBody');
+  const statsMonthFilter = document.getElementById('statsMonthFilter');
+  
+  if (statsMonthFilter) {
+    const now = new Date();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    statsMonthFilter.value = `${now.getFullYear()}-${mm}`;
+    statsMonthFilter.addEventListener('change', loadDashboard);
+  }
 
   async function loadDashboard() {
+    const month = statsMonthFilter ? statsMonthFilter.value : null;
     try {
-      const data = await adminFetch('get_stats');
+      const data = await adminFetch('get_stats', { month });
       if (data.success) {
         document.getElementById('statQRPagos').textContent = data.stats.qrPagos;
         document.getElementById('statQRMembers').textContent = data.stats.qrMembers;
@@ -118,7 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!eventStatsTableBody) return;
     eventStatsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
     
-    const data = await adminFetch('list_events');
+    const month = statsMonthFilter ? statsMonthFilter.value : null;
+    const data = await adminFetch('list_events', { month });
     if (data.success) {
       eventStatsTableBody.innerHTML = '';
       data.events.forEach(ev => {

@@ -155,16 +155,29 @@ serve(async (req) => {
       throw new Error("Acceso denegado: Token inválido o expirado");
     }
 
+    const getDateBounds = (monthStr?: string) => {
+      let startOfMonth, endOfMonth;
+      if (monthStr && monthStr.match(/^\d{4}-\d{2}$/)) {
+        const [year, month] = monthStr.split("-");
+        startOfMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
+        endOfMonth = new Date(parseInt(year), parseInt(month), 1);
+      } else {
+        const now = new Date();
+        startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      }
+      return { startStr: startOfMonth.toISOString(), endStr: endOfMonth.toISOString() };
+    };
+
     // --- 2. GET STATS ---
     if (action === "get_stats") {
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const { startStr, endStr } = getDateBounds(payload?.month);
       
-      const { count: qrPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).gte("created_at", startOfMonth);
-      const { count: qrMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).gte("created_at", startOfMonth);
+      const { count: qrPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).gte("created_at", startStr).lt("created_at", endStr);
+      const { count: qrMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).gte("created_at", startStr).lt("created_at", endStr);
       
-      const { count: ingresosEscaneadosMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startOfMonth);
-      const { count: ingresosEscaneadosPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startOfMonth);
+      const { count: ingresosEscaneadosMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startStr).lt("created_at", endStr);
+      const { count: ingresosEscaneadosPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startStr).lt("created_at", endStr);
       
       return new Response(
         JSON.stringify({
@@ -182,7 +195,8 @@ serve(async (req) => {
 
     // --- 3. EVENTS ---
     if (action === "list_events") {
-      const { data: events, error: errEvents } = await supabase.from("events").select("*").order("created_at", { ascending: false });
+      const { startStr, endStr } = getDateBounds(payload?.month);
+      const { data: events, error: errEvents } = await supabase.from("events").select("*").gte("event_date", startStr).lt("event_date", endStr).order("created_at", { ascending: false });
       if (errEvents) throw errEvents;
 
       // Estadísticas por evento: socios (member_tickets, gratis) vs clientes pagos (paid_tickets)
