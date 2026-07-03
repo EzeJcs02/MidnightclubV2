@@ -12,6 +12,16 @@ async function initCarta() {
     const path = window.location.pathname;
     if (!path.includes('carta')) return;
     setupAuthUI();
+
+    // Force-clear search input — browsers (Chrome) ignore autocomplete=off
+    // and autofill it with saved credentials. We explicitly wipe it.
+    const searchEl = document.getElementById('searchInput');
+    if (searchEl) {
+        searchEl.value = '';
+        // Also clear it after a brief delay, since some browsers fill after DOMContentLoaded
+        setTimeout(() => { searchEl.value = ''; }, 100);
+    }
+
     await loadMenu();
     setupEvents();
 }
