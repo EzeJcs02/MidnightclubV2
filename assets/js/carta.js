@@ -126,7 +126,7 @@ function renderMenu() {
 
             const navMeta = document.createElement('span');
             navMeta.className = 'nav-meta';
-            const catIndex = (data.indexOf(cat) + 1).toString().padStart(2, '0');
+            const catIndex = (allCategories.indexOf(cat) + 1).toString().padStart(2, '0');
             navMeta.textContent = `${catIndex} // CATEGORY`;
 
             const navTitle = document.createElement('h2');
