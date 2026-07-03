@@ -246,6 +246,16 @@ export function setupGlobalNav() {
           }
         });
         
+        // 5b. Limpiar estilos SPA anteriores e inyectar los nuevos
+        document.querySelectorAll('style.spa-style').forEach(s => s.remove());
+        doc.querySelectorAll('style').forEach(style => {
+          const newStyle = document.createElement('style');
+          newStyle.className = 'spa-style';
+          newStyle.textContent = style.textContent;
+          document.head.appendChild(newStyle);
+        });
+
+        
         // 6. Cerrar menús abiertos
         const overlay = document.getElementById('noirNavOverlay');
         if (overlay) overlay.classList.remove('active');
