@@ -124,7 +124,6 @@ function renderMenu() {
 
             const navTitle = document.createElement('h2');
             navTitle.className = 'nav-title';
-            navTitle.style.fontSize = 'clamp(1.8rem, 6vw, 4rem)';
             navTitle.textContent = cat.name;
 
             const content = document.createElement('div');

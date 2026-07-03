@@ -152,7 +152,6 @@ async function loadTickets() {
 
       const title = document.createElement('h2');
       title.className = 'nav-title';
-      title.style.fontSize = 'clamp(2rem, 5vw, 4rem)';
       title.textContent = group.title;
       
       const btnWrap = document.createElement('div');
