@@ -253,14 +253,16 @@ export function setupGlobalNav() {
         // 6. Cerrar menús abiertos
         const overlay = document.getElementById('noirNavOverlay');
         if (overlay) overlay.classList.remove('active');
-        document.body.style.overflow = '';
+        document.documentElement.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll');
 
         // 6b. Cerrar el gate de login si había quedado abierto (si no se cierra,
         // queda tapando la página nueva como si toda la web exigiera ser socio)
         const gate = document.getElementById('mc-login-gate');
         if (gate && gate.classList.contains('show')) {
           gate.classList.remove('show');
-          document.body.style.overflow = '';
+          document.documentElement.classList.remove('no-scroll');
+          document.body.classList.remove('no-scroll');
           setTimeout(() => { gate.style.display = 'none'; }, 300);
         }
         
@@ -294,13 +296,15 @@ export function setupGlobalNav() {
     if ((icon && icon.textContent.trim() === 'menu') || 
         (leftContainer && leftContainer.querySelector('.material-symbols-outlined')?.textContent.trim() === 'menu')) {
       if (dynamicOverlay) dynamicOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
+      document.documentElement.classList.add('no-scroll');
+      document.body.classList.add('no-scroll');
     }
 
     // Cierre del drawer
     if (e.target.closest('#noirNavClose')) {
       if (dynamicOverlay) dynamicOverlay.classList.remove('active');
-      document.body.style.overflow = '';
+      document.documentElement.classList.remove('no-scroll');
+      document.body.classList.remove('no-scroll');
     }
   });
 }
@@ -359,7 +363,8 @@ export function setupAuthUI() {
     if (overlay) overlay.classList.remove('active');
     
     gate.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    document.documentElement.classList.add('no-scroll');
+    document.body.classList.add('no-scroll');
     setTimeout(() => gate.classList.add('show'), 10);
     inpId.focus();
   }
@@ -375,7 +380,8 @@ export function setupAuthUI() {
 
   if(btnClose) btnClose.addEventListener('click', () => {
     gate.classList.remove('show'); 
-    document.body.style.overflow = '';
+    document.documentElement.classList.remove('no-scroll');
+    document.body.classList.remove('no-scroll');
     setTimeout(() => { gate.style.display = 'none'; switchView('login'); }, 300);
   });
 
