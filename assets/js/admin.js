@@ -191,14 +191,29 @@ document.addEventListener('DOMContentLoaded', () => {
       data.members.forEach(m => {
         const tr = document.createElement('tr');
         const badgeClass = m.status === 'active' ? 'active' : (m.status === 'rejected' ? 'rejected' : 'pending');
+        let actionsHtml = '';
+        if (m.status === 'pending') {
+          actionsHtml = `
+            <button class="btn-action mem-status" data-id="${m.id}" data-status="active" style="color:#4ade80; border-color:#4ade80;">✓ APROBAR</button>
+            <button class="btn-action mem-status" data-id="${m.id}" data-status="rejected" style="color:#f87171; border-color:#f87171;">✕ RECHAZAR</button>
+          `;
+        } else if (m.status === 'active') {
+          actionsHtml = `
+            <button class="btn-action mem-status" data-id="${m.id}" data-status="rejected" style="color:#f87171; border-color:#f87171;">✕ REVOCAR</button>
+          `;
+        } else {
+          actionsHtml = `
+            <button class="btn-action mem-status" data-id="${m.id}" data-status="active" style="color:#4ade80; border-color:#4ade80;">✓ APROBAR</button>
+          `;
+        }
+
         tr.innerHTML = `
           <td><strong>${m.nombre || 'N/A'}</strong><br><small style="color:#888">${m.email || ''}</small></td>
           <td>${m.document_id || 'N/A'}</td>
           <td>${m.instagram || 'N/A'}</td>
           <td><span class="badge ${badgeClass}">${m.status ? m.status.toUpperCase() : 'ACTIVE'}</span></td>
           <td style="display:flex; gap:10px;">
-            <button class="btn-action mem-status" data-id="${m.id}" data-status="active" style="color:#4ade80; border-color:#4ade80;">✓ APROBAR</button>
-            <button class="btn-action mem-status" data-id="${m.id}" data-status="rejected" style="color:#f87171; border-color:#f87171;">✕ RECHAZAR</button>
+            ${actionsHtml}
           </td>
         `;
         membersTableBody.appendChild(tr);
