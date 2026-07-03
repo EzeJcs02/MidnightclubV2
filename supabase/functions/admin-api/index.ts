@@ -180,7 +180,31 @@ serve(async (req) => {
     if (action === "list_events") {
       const { data: events, error: errEvents } = await supabase.from("events").select("*").order("created_at", { ascending: false });
       if (errEvents) throw errEvents;
-      return new Response(JSON.stringify({ success: true, events }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      // Estadísticas por evento: socios (member_tickets, gratis) vs clientes pagos (paid_tickets)
+      const eventsWithStats = await Promise.all((events || []).map(async (ev) => {
+        const [memberEmitted, memberUsed, paidRows] = await Promise.all([
+          supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("event_id", ev.id),
+          supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("event_id", ev.id).eq("status", "used"),
+          supabase.from("paid_tickets").select("amount, status").eq("event_id", ev.id),
+        ]);
+
+        const paidList = paidRows.data || [];
+        const revenue = paidList.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+        return {
+          ...ev,
+          stats: {
+            memberEmitted: memberEmitted.count || 0,
+            memberUsed: memberUsed.count || 0,
+            paidSold: paidList.length,
+            paidUsed: paidList.filter((r) => r.status === "used").length,
+            revenue,
+          },
+        };
+      }));
+
+      return new Response(JSON.stringify({ success: true, events: eventsWithStats }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "create_event") {

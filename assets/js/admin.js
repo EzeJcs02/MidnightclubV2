@@ -114,8 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentEvents = [];
 
+  const fmtARS = (v) => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(v || 0);
+
   async function loadEvents() {
-    eventsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
+    eventsTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center">Cargando...</td></tr>';
     const data = await adminFetch('list_events');
     if (data.success) {
       currentEvents = data.events;
@@ -123,10 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
       data.events.forEach(ev => {
         const tr = document.createElement('tr');
         const dateStr = new Date(ev.event_date).toLocaleString('es-AR');
+        const stats = ev.stats || { memberEmitted: 0, memberUsed: 0, paidSold: 0, paidUsed: 0, revenue: 0 };
         tr.innerHTML = `
           <td><strong>${escapeHtml(ev.title)}</strong><br><small style="color:#888">${escapeHtml(ev.description || '')}</small></td>
           <td>${escapeHtml(dateStr)}</td>
           <td>${escapeHtml(ev.max_tickets_per_member)}</td>
+          <td>${stats.memberUsed} / ${stats.memberEmitted}<br><small style="color:#888">escaneadas / emitidas</small></td>
+          <td>${stats.paidUsed} / ${stats.paidSold}<br><small style="color:#888">escaneadas / vendidas</small></td>
+          <td>${escapeHtml(fmtARS(stats.revenue))}</td>
           <td><span class="badge ${ev.is_active ? 'active' : 'rejected'}">${ev.is_active ? 'ACTIVO' : 'OCULTO'}</span></td>
           <td style="display:flex; gap:10px;">
             <button class="btn-action btn-edit-ev" data-id="${escapeHtml(ev.id)}">EDITAR</button>
