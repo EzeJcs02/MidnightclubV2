@@ -183,47 +183,8 @@ export function setupGlobalNav() {
     
     const href = link.getAttribute('href');
     const target = link.getAttribute('target');
-    
-    // Double tap protection for large UI links on mobile
-    const isMobile = window.innerWidth <= 768;
-    const isLargeLink = link.classList.contains('editorial-nav-link') || link.classList.contains('noir-nav-link');
-    
-    if (isMobile && isLargeLink) {
-      const now = Date.now();
-      const timeSinceLastTap = now - (window._lastTapTime || 0);
-      
-      if (window._lastTapNode === link && timeSinceLastTap < 3000) {
-        // Second tap - valid. Reset and let it proceed
-        window._lastTapNode = null;
-      } else {
-        // First tap - cancel event to prevent navigation
-        e.preventDefault();
-        
-        window._lastTapNode = link;
-        window._lastTapTime = now;
-        
-        const metaSelector = link.classList.contains('editorial-nav-link') ? '.nav-meta, .mc-item-details' : '.noir-nav-meta';
-        const metaSpan = link.querySelector(metaSelector);
-        
-        if (metaSpan && !link.dataset.originalMeta) {
-          link.dataset.originalMeta = metaSpan.innerText;
-          metaSpan.innerText = "TOCA DE NUEVO PARA ABRIR";
-          metaSpan.style.color = "#cdfb3e";
-          
-          setTimeout(() => {
-            if (window._lastTapNode === link) {
-              window._lastTapNode = null;
-              metaSpan.innerText = link.dataset.originalMeta;
-              metaSpan.style.color = "";
-              delete link.dataset.originalMeta;
-            }
-          }, 3000);
-        }
-        return; // Stop execution, don't navigate yet
-      }
-    }
-    
-    // Si pasamos la protección o no aplica, evaluamos si es SPA
+
+    // ¿Es un link interno? Si sí, navegamos por SPA
     const isInternal = href && !href.startsWith('http') && !href.startsWith('mailto') && !href.startsWith('#') && target !== '_blank';
     
     if (isInternal) {
