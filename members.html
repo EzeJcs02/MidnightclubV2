@@ -20,11 +20,11 @@
   <link rel="stylesheet" href="assets/css/layout.css?v=rebrand3">
 
   <style>
-    /* Structural Noir - Form Overrides */
+    /* Structural Noir - Solicitar ID Form */
     .noir-form-group {
       width: 100%;
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 3rem 1.5rem;
+      padding: 3rem 1.5rem 2rem;
       transition: background-color 0.3s;
     }
     .noir-form-group:focus-within {
@@ -35,9 +35,9 @@
       font-family: 'Inter', sans-serif;
       font-size: 0.625rem;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
-      margin-bottom: 0.5rem;
-      opacity: 0.5;
+      letter-spacing: 0.3em;
+      margin-bottom: 1.5rem;
+      color: rgba(255,255,255,0.4);
     }
     .noir-input {
       width: 100%;
@@ -46,65 +46,91 @@
       color: #fff;
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
-      font-size: clamp(3rem, 10vw, 7.5rem);
+      font-size: clamp(2.5rem, 8vw, 6rem);
       line-height: 1;
       text-transform: uppercase;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.04em;
       outline: none;
+      caret-color: #fff;
     }
     .noir-input::placeholder {
-      color: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.08);
     }
     .noir-btn {
       width: 100%;
-      padding: 4rem 1.5rem;
-      background: transparent;
+      padding: 3.5rem 1.5rem;
+      background: #fff;
       border: none;
-      border-bottom: 1px solid #474747;
-      color: #fff;
+      color: #000;
       text-align: left;
       font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: clamp(3rem, 10vw, 7.5rem);
+      font-weight: 900;
+      font-size: clamp(2.5rem, 8vw, 6rem);
       text-transform: uppercase;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.04em;
       cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
+      transition: background 0.2s;
     }
-    .noir-btn:hover {
-      background-color: rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
+    .noir-btn:hover { background: #e5e5e5; }
     .noir-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.35;
       cursor: not-allowed;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
     }
     .checkbox-group-noir {
       padding: 2rem 1.5rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
       border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .checkbox-group-noir input[type=checkbox] {
+      width: 24px;
+      height: 24px;
+      accent-color: #fff;
+      flex-shrink: 0;
     }
     .checkbox-group-noir label {
       font-family: 'Inter', sans-serif;
-      font-size: 0.75rem;
-      color: #999;
-      letter-spacing: 0.1em;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
+      line-height: 1.5;
     }
     .error-text, .success-text {
-      padding: 2rem 1.5rem;
-      font-family: 'Space Grotesk', sans-serif;
+      padding: 1.5rem 1.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       display: none;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .error-text { color: #ff3333; }
-    .success-text { color: #33ff33; }
+    .success-text { color: #33ff99; }
+    .form-page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 10vw, 7.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #fff;
+      padding: 4rem 1.5rem 2rem;
+      border-bottom: 1px solid #474747;
+    }
+    .form-page-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.625rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      padding: 1.5rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
   </style>
 </head>
 
@@ -124,6 +150,10 @@
   </header>
 
   <main class="editorial-main" style="padding-top: 60px;">
+
+    <div class="form-page-title">SOLICITAR ID</div>
+    <div class="form-page-meta">03 // REGISTER — COMPLETA TUS DATOS PARA APLICAR</div>
+
     <form id="memberForm" style="width: 100%;">
       
       <div class="noir-form-group">
@@ -143,7 +173,7 @@
 
       <div class="noir-form-group">
         <label class="noir-label">04 // WHATSAPP</label>
-        <input type="tel" id="telefono" class="noir-input" placeholder="EJ: 387 123 4567" required />
+        <input type="tel" id="telefono" class="noir-input" placeholder="387 123 4567" required />
       </div>
 
       <div class="noir-form-group">
@@ -152,18 +182,14 @@
       </div>
 
       <div class="checkbox-group-noir">
-        <input type="checkbox" id="legalCheck" required style="width: 20px; height: 20px; accent-color: #fff;">
-        <label for="legalCheck">
-          DECLARO SER MAYOR DE 18 AÑOS Y ACEPTO LOS TÉRMINOS
-        </label>
+        <input type="checkbox" id="legalCheck" required>
+        <label for="legalCheck">Declaro ser mayor de 18 años y acepto los términos y condiciones</label>
       </div>
 
       <div id="errorMsg" class="error-text"></div>
       <div id="successMsg" class="success-text">SOLICITUD ENVIADA CORRECTAMENTE</div>
 
-      <button type="submit" id="btnSubmit" class="noir-btn">
-        [ ENVIAR SOLICITUD ]
-      </button>
+      <button type="submit" id="btnSubmit" class="noir-btn">ENVIAR SOLICITUD</button>
 
     </form>
   </main>
