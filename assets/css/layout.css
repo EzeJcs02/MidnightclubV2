@@ -588,47 +588,8 @@
 }
 .mc-shake { animation: shake 0.4s ease-in-out; border-color: #ffffff !important; }
 
-.password-group { position: relative; width: 100%; }
-.toggle-password {
-  position: absolute;
-  right: 0;
-  top: 14px;
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  font-size: 18px;
-  transition: all 0.2s ease;
-  padding: 4px;
-}
-.toggle-password:hover {
-  color: var(--mc-red);
-  transform: scale(1.1);
-}
 
-.mc-gate-close {
-  margin-top: 24px;
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-  cursor: pointer;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-.mc-gate-close:hover {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
 
-.mc-gate-error { color: var(--mc-red); font-size: 11px; margin-bottom: 15px; display: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; min-height: 20px;}
-
-.gate-view { transition: opacity 0.3s ease; }
-.hidden-view { display: none; opacity: 0; }
 
 .mc-footer-cta {
   text-align: center;
