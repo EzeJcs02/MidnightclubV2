@@ -410,61 +410,67 @@
 }
 
 /* =========================================
-   LOGIN / GATE - EDITORIAL COMPACT MODAL
+   LOGIN / GATE - BOTTOM SHEET
    ========================================= */
 #mc-login-gate {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 10000;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  z-index: 9000;           /* Below top-app-bar so hamburger stays clickable */
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   opacity: 0;
   transition: opacity 0.35s ease;
-  overflow-y: auto;
 }
 #mc-login-gate.show { opacity: 1; }
 #mc-login-gate.show #mc-login-card { transform: translateY(0); }
 
+/* Clicking the dark top area closes the modal */
+#mc-login-gate::before {
+  content: '';
+  flex: 1;
+  cursor: pointer;
+}
+
 #mc-login-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 100%;
   background: #0d0d0d;
-  border: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255,255,255,0.15);
   padding: 0;
   text-align: left;
   position: relative;
   border-radius: 0;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.8);
-  transform: translateY(20px);
-  transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: 0 -20px 60px rgba(0,0,0,0.9);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .mc-gate-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-size: clamp(1.3rem, 5vw, 2rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.03em;
   line-height: 1;
   color: #fff;
-  padding: 2rem 1.5rem 1.5rem;
+  padding: 1.8rem 1.5rem 1.2rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .mc-gate-input {
   width: 100%;
-  padding: 1.2rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 3vw, 1.2rem);
   font-weight: 600;
   text-align: left;
   text-transform: uppercase;
@@ -485,7 +491,6 @@
   background: rgba(255,255,255,0.03);
   border-bottom-color: rgba(255,255,255,0.5);
 }
-/* Override browser autofill backgrounds */
 .mc-gate-input:-webkit-autofill,
 .mc-gate-input:-webkit-autofill:hover,
 .mc-gate-input:-webkit-autofill:focus {
@@ -513,14 +518,14 @@
 
 .mc-gate-btn {
   width: 100%;
-  padding: 1.3rem 1.5rem;
+  padding: 1.2rem 1.5rem;
   background: #fff;
   color: #000;
   border: none;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 900;
-  font-size: 1rem;
-  letter-spacing: 0.15em;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
   cursor: pointer;
   text-transform: uppercase;
   border-radius: 0;
@@ -531,19 +536,19 @@
   margin-top: 0;
 }
 .mc-gate-btn:hover { background: #e5e5e5; }
-.mc-gate-btn:active { background: #ccc; transform: scale(0.99); }
+.mc-gate-btn:active { background: #ccc; }
 .mc-gate-btn::before { display: none; }
 
 .mc-gate-close {
   width: 100%;
-  padding: 0.9rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   background: transparent;
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.07);
   color: rgba(255,255,255,0.3);
   font-family: 'Inter', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   cursor: pointer;
   text-align: center;
@@ -554,10 +559,10 @@
 .mc-link-recovery {
   display: block;
   width: 100%;
-  padding: 0.8rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.3);
@@ -569,7 +574,7 @@
 
 .mc-gate-error {
   font-family: 'Inter', sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #ff4444;
@@ -873,7 +878,7 @@
    ========================================= */
 .top-app-bar {
   position: fixed;
-  top: 0; left: 0; width: 100%; z-index: 50;
+  top: 0; left: 0; width: 100%; z-index: 9999;
   background-color: transparent;
   color: #ffffff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
