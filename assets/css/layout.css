@@ -1,4 +1,4 @@
-@import 'nav-overlay.css';
+@import 'nav-overlay.css?v=2';
 
 *, *::before, *::after { box-sizing: border-box; }
 /* 
