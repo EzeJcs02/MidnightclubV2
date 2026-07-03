@@ -110,22 +110,22 @@
   </main>
 
   <!-- Modals -->
-  <div class="overlay" id="overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:100; align-items:center; justify-content:center;">
+  <div class="overlay" id="priceModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:100; align-items:center; justify-content:center;">
     <div class="modal" style="background:#0a0a0a; padding:3rem; border:1px solid #333; width:100%; max-width:500px; text-align:center; font-family:'Space Grotesk';">
       <div class="modal-title" id="modalTitle" style="font-size:2rem; font-weight:700; margin-bottom:1rem; text-transform:uppercase;"></div>
       <div id="modalDesc" style="font-family:'Inter'; color:#888; margin-bottom:2rem;"></div>
-      
+
       <div class="price-box" style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding-bottom:1rem; margin-bottom:1rem;">
         <span style="color:#666; letter-spacing:0.1em;">EFECTIVO (20% OFF)</span>
-        <span class="price-cash" id="modalCash" style="font-size:1.5rem;"></span>
+        <span class="price-cash" id="modalPriceCash" style="font-size:1.5rem;"></span>
       </div>
-      
+
       <div class="price-box" style="display:flex; justify-content:space-between; margin-bottom:2rem;">
         <span style="color:#666; letter-spacing:0.1em;">TARJETA / MP</span>
-        <span class="price-card" id="modalCard" style="font-size:1.5rem;"></span>
+        <span class="price-card" id="modalPriceList" style="font-size:1.5rem;"></span>
       </div>
-      
-      <button class="btn btn-primary" id="btnCloseModal" style="width:100%; background:#fff; color:#000; font-weight:bold; padding:1rem; border:none; cursor:pointer;">CERRAR</button>
+
+      <button class="btn btn-primary" id="btnCloseModal" onclick="closePriceModal()" style="width:100%; background:#fff; color:#000; font-weight:bold; padding:1rem; border:none; cursor:pointer;">CERRAR</button>
     </div>
   </div>
 

@@ -1,12 +1,12 @@
 import { loadDynamicHero, setupAuthUI } from './shared-ui.js';
-import CONFIG from './config.js';
+import { client } from './global.js';
 
 async function loadNextEvent() {
     const banner = document.getElementById('nextEventBanner');
     if (!banner) return;
     
     try {
-        const { data: events, error } = await CONFIG.SUPABASE.CLIENT
+        const { data: events, error } = await client
             .from('events')
             .select('*')
             .eq('is_active', true)
