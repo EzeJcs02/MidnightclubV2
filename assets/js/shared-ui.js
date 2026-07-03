@@ -18,6 +18,10 @@ function safeUrl(url) {
   return '#';
 }
 
+// Íconos de mostrar/ocultar contraseña (reemplazan los emoji 👁️/🔒)
+const ICON_EYE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>';
+const ICON_EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.66 19.66 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 8 11 8a19.7 19.7 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
 // Secure auth API call helper
 async function authRequest(action, data = {}) {
   const response = await fetch(AUTH_URL, {
@@ -66,7 +70,7 @@ const LOGIN_GATE_HTML = `
         <input id="loginId" type="text" class="mc-gate-input uppercase" placeholder="ID (Ej: MC-1234)" autocomplete="off" maxlength="9" />
         <div class="password-group">
           <input id="loginPass" type="password" class="mc-gate-input uppercase" placeholder="CONTRASEÑA" autocomplete="off" />
-          <button type="button" id="togglePassBtn" class="toggle-password" aria-label="Mostrar contraseña">👁️</button>
+          <button type="button" id="togglePassBtn" class="toggle-password" aria-label="Mostrar contraseña">${ICON_EYE}</button>
         </div>
         <div id="loginError" class="mc-gate-error">Credenciales incorrectas</div>
         <button id="btnLoginSubmit" class="mc-gate-btn">ENTRAR</button>
@@ -401,7 +405,8 @@ export function setupAuthUI() {
   if(togglePassBtn && inpPass) togglePassBtn.addEventListener('click', () => {
     const type = inpPass.getAttribute('type') === 'password' ? 'text' : 'password';
     inpPass.setAttribute('type', type);
-    togglePassBtn.textContent = type === 'password' ? '👁️' : '🔒';
+    togglePassBtn.innerHTML = type === 'password' ? ICON_EYE : ICON_EYE_OFF;
+    togglePassBtn.setAttribute('aria-label', type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña');
   });
 
   if(inpPass) inpPass.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
