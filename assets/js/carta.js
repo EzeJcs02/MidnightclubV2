@@ -107,10 +107,16 @@ function renderMenu() {
                 
                 const isOpen = groupLink.classList.contains('active');
                 if (!currentSearch) {
-                    document.querySelectorAll('.cat-header').forEach(c => c.classList.remove('active'));
+                    document.querySelectorAll('.cat-header').forEach(c => {
+                        c.classList.remove('active');
+                        const icon = c.querySelector('.accordion-icon');
+                        if (icon) icon.style.transform = 'rotate(0deg)';
+                    });
                 }
                 if (!isOpen) {
                     groupLink.classList.add('active');
+                    const icon = groupLink.querySelector('.accordion-icon');
+                    if (icon) icon.style.transform = 'rotate(45deg)';
                     setTimeout(() => {
                         const y = groupLink.getBoundingClientRect().top + window.pageYOffset - 100;
                         window.scrollTo({top: y, behavior: 'smooth'});
@@ -120,11 +126,18 @@ function renderMenu() {
 
             const navMeta = document.createElement('span');
             navMeta.className = 'nav-meta';
-            navMeta.textContent = `0${cat.id} // CATEGORY`;
+            const catIndex = (data.indexOf(cat) + 1).toString().padStart(2, '0');
+            navMeta.textContent = `${catIndex} // CATEGORY`;
 
             const navTitle = document.createElement('h2');
             navTitle.className = 'nav-title-sm';
-            navTitle.textContent = cat.name;
+            navTitle.style.display = 'flex';
+            navTitle.style.justifyContent = 'space-between';
+            navTitle.style.alignItems = 'center';
+            navTitle.innerHTML = `
+              <span>${cat.name}</span>
+              <span class="material-symbols-outlined accordion-icon" style="transition: transform 0.3s; font-size: 2rem;">add</span>
+            `;
 
             const content = document.createElement('div');
             content.className = 'cat-content';
