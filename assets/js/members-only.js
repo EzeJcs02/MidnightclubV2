@@ -73,7 +73,7 @@ function initDashboard() {
     const elId = document.getElementById('memberID');
     
     if(elName) elName.textContent = firstName;
-    if(elId) elId.textContent = "ID: " + memberData.member_id;
+    if(elId) elId.textContent = memberData.member_id;
 
     // UI: Listeners
     setupChangePassword();
