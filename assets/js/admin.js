@@ -1,5 +1,12 @@
 import CONFIG from './config.js';
 
+// Escapa texto no confiable antes de interpolarlo en innerHTML
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str === null || str === undefined ? '' : String(str);
+  return div.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const loginScreen = document.getElementById('loginScreen');
   const dashboardScreen = document.getElementById('dashboardScreen');
@@ -105,22 +112,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSaveEvent = document.getElementById('btnSaveEvent');
   const evId = document.getElementById('evId');
 
+  let currentEvents = [];
+
   async function loadEvents() {
     eventsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">Cargando...</td></tr>';
     const data = await adminFetch('list_events');
     if (data.success) {
+      currentEvents = data.events;
       eventsTableBody.innerHTML = '';
       data.events.forEach(ev => {
         const tr = document.createElement('tr');
         const dateStr = new Date(ev.event_date).toLocaleString('es-AR');
         tr.innerHTML = `
-          <td><strong>${ev.title}</strong><br><small style="color:#888">${ev.description || ''}</small></td>
-          <td>${dateStr}</td>
-          <td>${ev.max_tickets_per_member}</td>
+          <td><strong>${escapeHtml(ev.title)}</strong><br><small style="color:#888">${escapeHtml(ev.description || '')}</small></td>
+          <td>${escapeHtml(dateStr)}</td>
+          <td>${escapeHtml(ev.max_tickets_per_member)}</td>
           <td><span class="badge ${ev.is_active ? 'active' : 'rejected'}">${ev.is_active ? 'ACTIVO' : 'OCULTO'}</span></td>
           <td style="display:flex; gap:10px;">
-            <button class="btn-action btn-edit-ev" data-json='${JSON.stringify(ev)}'>EDITAR</button>
-            <button class="btn-action toggle-ev" data-id="${ev.id}" data-active="${ev.is_active}">${ev.is_active ? 'OCULTAR' : 'MOSTRAR'}</button>
+            <button class="btn-action btn-edit-ev" data-id="${escapeHtml(ev.id)}">EDITAR</button>
+            <button class="btn-action toggle-ev" data-id="${escapeHtml(ev.id)}" data-active="${ev.is_active}">${ev.is_active ? 'OCULTAR' : 'MOSTRAR'}</button>
           </td>
         `;
         eventsTableBody.appendChild(tr);
@@ -132,8 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       document.querySelectorAll('.btn-edit-ev').forEach(b => b.onclick = (e) => {
-        const ev = JSON.parse(e.target.dataset.json);
-        openEventModal(ev);
+        const ev = currentEvents.find(x => x.id === e.target.dataset.id);
+        if (ev) openEventModal(ev);
       });
     }
   }
@@ -208,10 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         tr.innerHTML = `
-          <td><strong>${m.nombre || 'N/A'}</strong><br><small style="color:#888">${m.email || ''}</small></td>
-          <td>${m.document_id || 'N/A'}</td>
-          <td>${m.instagram || 'N/A'}</td>
-          <td><span class="badge ${badgeClass}">${m.status ? m.status.toUpperCase() : 'ACTIVE'}</span></td>
+          <td><strong>${escapeHtml(m.nombre || 'N/A')}</strong><br><small style="color:#888">${escapeHtml(m.email || '')}</small></td>
+          <td>${escapeHtml(m.member_id || 'N/A')}</td>
+          <td>${escapeHtml(m.instagram || 'N/A')}</td>
+          <td><span class="badge ${badgeClass}">${escapeHtml(m.status ? m.status.toUpperCase() : 'ACTIVE')}</span></td>
           <td style="display:flex; gap:10px;">
             ${actionsHtml}
           </td>
@@ -245,18 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
       currentCategories = data.categories || [];
       
       // Populate category select in modal
-      cartaCatSelect.innerHTML = currentCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      cartaCatSelect.innerHTML = currentCategories.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
 
       cartaTableBody.innerHTML = '';
       data.items.forEach(item => {
         const tr = document.createElement('tr');
         const catName = item.menu_categories ? item.menu_categories.name : 'N/A';
         tr.innerHTML = `
-          <td><small style="color:#888">${catName}</small></td>
-          <td><strong>${item.name}</strong></td>
-          <td>$${item.price}</td>
+          <td><small style="color:#888">${escapeHtml(catName)}</small></td>
+          <td><strong>${escapeHtml(item.name)}</strong></td>
+          <td>$${escapeHtml(item.price)}</td>
           <td>
-            <button class="btn-action del-carta" data-id="${item.id}" style="color:#f87171; border-color:#f87171;">ELIMINAR</button>
+            <button class="btn-action del-carta" data-id="${escapeHtml(item.id)}" style="color:#f87171; border-color:#f87171;">ELIMINAR</button>
           </td>
         `;
         cartaTableBody.appendChild(tr);

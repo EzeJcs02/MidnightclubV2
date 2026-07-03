@@ -9,12 +9,52 @@ const ALLOWED_ORIGINS = [
 ];
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowedOrigin = origin ? origin : "*";
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
   };
+}
+
+// Rate limiting config (mismo patrón que auth-member)
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutos
+const MAX_LOGIN_ATTEMPTS = 5;
+const loginAttempts = new Map<string, { count: number; firstAttempt: number }>();
+
+function checkRateLimit(identifier: string): { allowed: boolean; resetIn: number } {
+  const now = Date.now();
+  const record = loginAttempts.get(identifier);
+
+  if (record && now - record.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+    loginAttempts.delete(identifier);
+  }
+
+  const current = loginAttempts.get(identifier);
+  if (!current) {
+    return { allowed: true, resetIn: RATE_LIMIT_WINDOW_MS };
+  }
+
+  return {
+    allowed: current.count < MAX_LOGIN_ATTEMPTS,
+    resetIn: Math.max(0, RATE_LIMIT_WINDOW_MS - (now - current.firstAttempt)),
+  };
+}
+
+function recordLoginAttempt(identifier: string): void {
+  const now = Date.now();
+  const record = loginAttempts.get(identifier);
+
+  if (!record || now - record.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+    loginAttempts.set(identifier, { count: 1, firstAttempt: now });
+  } else {
+    record.count++;
+  }
+}
+
+function clearLoginAttempts(identifier: string): void {
+  loginAttempts.delete(identifier);
 }
 
 // Generates an Admin JWT
@@ -66,10 +106,14 @@ serve(async (req) => {
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const JWT_SECRET = Deno.env.get("MEMBER_JWT_SECRET")!; 
+    const JWT_SECRET = Deno.env.get("MEMBER_JWT_SECRET")!;
+    const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASSWORD")!;
 
     if (!JWT_SECRET) {
       throw new Error("CRITICAL: MEMBER_JWT_SECRET not configured");
+    }
+    if (!ADMIN_PASSWORD) {
+      throw new Error("CRITICAL: ADMIN_PASSWORD not configured");
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -79,14 +123,26 @@ serve(async (req) => {
 
     // --- 1. LOGIN ---
     if (action === "login") {
+      const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+      const rateCheck = checkRateLimit(clientIP);
+      if (!rateCheck.allowed) {
+        const resetMinutes = Math.ceil(rateCheck.resetIn / 60000);
+        return new Response(
+          JSON.stringify({ success: false, error: `Demasiados intentos. Reintenta en ${resetMinutes} minutos.` }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }
+        );
+      }
+
       const { password } = payload;
-      if (password === "Midnight2026") {
+      if (password === ADMIN_PASSWORD) {
+        clearLoginAttempts(clientIP);
         const adminToken = await generateAdminJwt(JWT_SECRET);
         return new Response(
           JSON.stringify({ success: true, token: adminToken }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       } else {
+        recordLoginAttempt(clientIP);
         throw new Error("Contraseña incorrecta");
       }
     }
@@ -197,8 +253,14 @@ serve(async (req) => {
     throw new Error("Unknown action");
 
   } catch (error) {
+    console.error("admin-api error:", error);
+    // Los errores de Postgrest/Postgres traen ".code" (SQLSTATE) y pueden filtrar
+    // detalles del schema; los mensajes que lanzamos nosotros ("new Error(...)") no.
+    const clientMessage = (error && typeof error === "object" && "code" in error)
+      ? "Error interno del servidor"
+      : (error?.message || "Error interno del servidor");
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: clientMessage }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
     );
   }

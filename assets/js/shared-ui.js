@@ -3,6 +3,21 @@ import CONFIG from './config.js';
 
 const AUTH_URL = CONFIG.SUPABASE.AUTH_FUNCTION;
 
+// Escapa texto no confiable antes de interpolarlo en innerHTML
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str === null || str === undefined ? '' : String(str);
+  return div.innerHTML;
+}
+
+// Solo permite URLs http(s) o relativas; bloquea javascript:, data:, etc.
+function safeUrl(url) {
+  if (!url) return '#';
+  const trimmed = String(url).trim();
+  if (/^https?:\/\//i.test(trimmed) || /^[/.]/.test(trimmed)) return trimmed;
+  return '#';
+}
+
 // Secure auth API call helper
 async function authRequest(action, data = {}) {
   const response = await fetch(AUTH_URL, {
@@ -574,10 +589,10 @@ export async function renderDynamicCards(containerSelector, keyPrefix) {
   }
 
   container.innerHTML = data.map(item => `
-    <div class="mc-item-row" data-key="${item.key}">
-      <a href="${item.url || '#'}" target="_blank" class="mc-item-link block w-full h-full">
-        <h2 class="mc-item-title">${item.name || 'Acceso'}</h2>
-        <div class="mc-item-details"><span>${item.description || ''}</span></div>
+    <div class="mc-item-row" data-key="${escapeHtml(item.key)}">
+      <a href="${escapeHtml(safeUrl(item.url))}" target="_blank" class="mc-item-link block w-full h-full">
+        <h2 class="mc-item-title">${escapeHtml(item.name || 'Acceso')}</h2>
+        <div class="mc-item-details"><span>${escapeHtml(item.description || '')}</span></div>
         <div class="mc-item-arrow">→</div>
       </a>
     </div>

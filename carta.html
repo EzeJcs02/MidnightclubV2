@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Carta - Midnight Club</title>
   <meta name="description" content="Midnight Club - Menú y Precios">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -86,15 +86,16 @@
 
   <header class="top-app-bar">
     <div class="left">
-      <span class="material-symbols-outlined">menu</span>
+      <span class="material-symbols-outlined" role="button" tabindex="0" aria-label="Abrir menú">menu</span>
     </div>
     <div class="logo">MIDNIGHT CLUB</div>
   </header>
 
   <main class="editorial-main">
-    
+
     <div class="search-input-wrapper">
-      <span class="material-symbols-outlined" style="color: #666;">search</span>
+      <label for="searchInput" class="sr-only">Buscar bebida</label>
+      <span class="material-symbols-outlined" style="color: #666;" aria-hidden="true">search</span>
       <input type="text" id="searchInput" placeholder="BUSCAR BEBIDA..." autocomplete="off" name="search-drinks" spellcheck="false">
     </div>
 

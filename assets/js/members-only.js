@@ -106,7 +106,11 @@ async function loadTickets() {
     const data = await res.json();
     
     if(!data.success) {
-      container.innerHTML = `<div style="color:var(--mc-red)">${data.error || 'ERROR CARGANDO EVENTOS'}</div>`;
+      container.innerHTML = '';
+      const errDiv = document.createElement('div');
+      errDiv.style.color = 'var(--mc-red)';
+      errDiv.textContent = data.error || 'ERROR CARGANDO EVENTOS';
+      container.appendChild(errDiv);
       return;
     }
 

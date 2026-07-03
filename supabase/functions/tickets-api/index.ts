@@ -10,11 +10,12 @@ const ALLOWED_ORIGINS = [
 ];
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowedOrigin = origin ? origin : "*";
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
   };
 }
 
@@ -48,9 +49,13 @@ serve(async (req) => {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const JWT_SECRET = Deno.env.get("MEMBER_JWT_SECRET")!;
+    const SCANNER_PIN = Deno.env.get("SCANNER_PIN")!;
 
     if (!JWT_SECRET || JWT_SECRET === "change-this-in-production") {
       throw new Error("CRITICAL: MEMBER_JWT_SECRET not configured");
+    }
+    if (!SCANNER_PIN) {
+      throw new Error("CRITICAL: SCANNER_PIN not configured");
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -141,6 +146,12 @@ serve(async (req) => {
         if (errInsert.code === "23505") { // unique violation
           throw new Error("Ya posees una entrada idéntica generada recientemente. Intenta de nuevo.");
         }
+        if (errInsert.code === "MCX01") { // trigger: límite excedido (chequeo atómico)
+          return new Response(
+            JSON.stringify({ success: false, error: "Has alcanzado el límite de entradas para este evento." }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         throw errInsert;
       }
 
@@ -155,7 +166,7 @@ serve(async (req) => {
       const { qr_code, pin } = body;
       
       // Simple security for the scanner panel (PIN code)
-      if (pin !== "2026") {
+      if (pin !== SCANNER_PIN) {
         throw new Error("PIN de seguridad incorrecto");
       }
       if (!qr_code) throw new Error("Falta el código QR");
@@ -163,7 +174,7 @@ serve(async (req) => {
       // Buscar el ticket
       const { data: ticket, error: errFind } = await supabase
         .from("member_tickets")
-        .select("*, events(title), members(name, document_id)")
+        .select("*, events(title), members(nombre)")
         .eq("qr_code", qr_code)
         .single();
 
@@ -202,8 +213,14 @@ serve(async (req) => {
     throw new Error("Unknown action");
 
   } catch (error) {
+    console.error("tickets-api error:", error);
+    // Los errores de Postgrest/Postgres traen ".code" (SQLSTATE) y pueden filtrar
+    // detalles del schema; los mensajes que lanzamos nosotros ("new Error(...)") no.
+    const clientMessage = (error && typeof error === "object" && "code" in error)
+      ? "Error interno del servidor"
+      : (error?.message || "Error interno del servidor");
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: clientMessage }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
     );
   }

@@ -7,7 +7,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 import { create, verify } from "https://deno.land/x/djwt@v3.0.1/mod.ts";
 
-// Dominios permitidos para CORS (informativo, ahora usamos reflexión dinámica)
+// Dominios permitidos para CORS
 const ALLOWED_ORIGINS = [
   "https://midnightclub.com.ar",
   "https://www.midnightclub.com.ar",
@@ -15,9 +15,8 @@ const ALLOWED_ORIGINS = [
 ];
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  // Reflejar el origen de la petición, o permitir todo si no hay origen (ej. file://)
-  const allowedOrigin = origin ? origin : "*";
-  
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -627,8 +626,8 @@ serve(async (req) => {
             });
             return jsonResponse({
               success: true,
-              warning: "Miembro aprobado pero email falló",
-              credentials: { member_id: finalMemberId, password: newPassword }
+              warning: "Miembro aprobado pero el email falló. Usá la recuperación de contraseña para reenviar el acceso.",
+              member_id: finalMemberId
             });
           }
 
@@ -642,7 +641,7 @@ serve(async (req) => {
           return jsonResponse({
             success: true,
             message: "Miembro aprobado y email enviado",
-            credentials: { member_id: finalMemberId, password: newPassword }
+            member_id: finalMemberId
           });
         } catch (emailError) {
           console.error("Email send error:", emailError);
@@ -655,8 +654,8 @@ serve(async (req) => {
           });
           return jsonResponse({
             success: true,
-            warning: "Miembro aprobado pero email falló",
-            credentials: { member_id: finalMemberId, password: newPassword }
+            warning: "Miembro aprobado pero el email falló. Usá la recuperación de contraseña para reenviar el acceso.",
+            member_id: finalMemberId
           });
         }
       }
@@ -670,7 +669,6 @@ serve(async (req) => {
     console.error("Error message:", err instanceof Error ? err.message : String(err));
     return jsonResponse({
       error: "Error interno del servidor",
-      details: err instanceof Error ? err.message : String(err)
     }, 500);
   }
 });

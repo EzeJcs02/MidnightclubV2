@@ -1,7 +1,20 @@
-/* 
+/*
   Midnight Club Online - Utilities
   Helper classes to remove inline styles
 */
+
+/* --- ACCESSIBILITY --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* --- SPACING --- */
 .pt-0 { padding-top: 0 !important; }

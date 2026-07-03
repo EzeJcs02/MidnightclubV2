@@ -142,6 +142,8 @@ migratePasswords();
 | Variable | Descripción |
 |----------|-------------|
 | `MEMBER_JWT_SECRET` | Secret para firmar tokens JWT (min 32 chars) |
+| `ADMIN_PASSWORD` | Contraseña de acceso al panel admin (usada por `admin-api`) |
+| `SCANNER_PIN` | PIN de acceso al panel scanner de entradas (usado por `tickets-api`) |
 
 ### Frontend (en `assets/js/config.js`)
 

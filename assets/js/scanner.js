@@ -18,24 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const tiEvent = document.getElementById('tiEvent');
   const tiMember = document.getElementById('tiMember');
-  const tiDni = document.getElementById('tiDni');
 
   let html5QrcodeScanner = null;
   let currentPin = '';
   let isScanning = false;
 
   // --- 1. Login Logic ---
+  // El PIN no se valida en el cliente: se guarda y se envía al servidor
+  // en cada validación de ticket, que es quien realmente lo verifica.
   btnEnter.addEventListener('click', () => {
     const pin = pinInput.value.trim();
-    if (pin === '2026') {
-      currentPin = pin;
-      authSection.style.display = 'none';
-      scannerSection.style.display = 'flex';
-      startScanner();
-    } else {
-      alert('PIN INCORRECTO');
-      pinInput.value = '';
+    if (!pin) {
+      alert('INGRESA EL PIN');
+      return;
     }
+    currentPin = pin;
+    authSection.style.display = 'none';
+    scannerSection.style.display = 'flex';
+    startScanner();
   });
 
   // --- 2. Scanner Logic ---
@@ -110,8 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (data.ticket && data.ticket.events && data.ticket.members) {
           tiEvent.textContent = data.ticket.events.title;
-          tiMember.textContent = data.ticket.members.name;
-          tiDni.textContent = data.ticket.members.document_id;
+          tiMember.textContent = data.ticket.members.nombre;
           ticketInfo.style.display = 'block';
         }
       } else {
@@ -120,11 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
         resultTitle.style.color = '#f87171'; // Rojo brillante
         resultTitle.textContent = '❌ RECHAZADO';
         resultMsg.textContent = data.error || 'CÓDIGO INVÁLIDO';
-        
+
+        // PIN incorrecto: volver a pedirlo, no seguir escaneando con un PIN inválido
+        if (data.error && data.error.toLowerCase().includes('pin')) {
+          currentPin = '';
+          pinInput.value = '';
+        }
+
         if (data.ticket && data.ticket.events && data.ticket.members) {
           tiEvent.textContent = data.ticket.events.title;
-          tiMember.textContent = data.ticket.members.name;
-          tiDni.textContent = data.ticket.members.document_id;
+          tiMember.textContent = data.ticket.members.nombre;
           ticketInfo.style.display = 'block';
         }
       }
@@ -140,6 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
   btnNextScan.addEventListener('click', () => {
     resultModal.style.display = 'none';
     manualCode.value = '';
+
+    if (!currentPin) {
+      // El PIN fue rechazado por el servidor: volver a pedirlo
+      if (html5QrcodeScanner) {
+        try { html5QrcodeScanner.pause(true); } catch (e) {}
+      }
+      scannerSection.style.display = 'none';
+      authSection.style.display = 'flex';
+      return;
+    }
+
     isScanning = true;
     if (html5QrcodeScanner) {
       html5QrcodeScanner.resume();

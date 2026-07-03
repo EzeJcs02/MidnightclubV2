@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Solicitar ID - Midnight Club Salta Argentina</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Solicita tu Membresía para Midnight Club." />
   
   <!-- Fonts & Icons -->
@@ -144,7 +144,7 @@
 
   <header class="top-app-bar">
     <div class="left">
-      <span class="material-symbols-outlined">menu</span>
+      <span class="material-symbols-outlined" role="button" tabindex="0" aria-label="Abrir menú">menu</span>
     </div>
     <div class="logo">MIDNIGHT CLUB</div>
   </header>
@@ -157,27 +157,27 @@
     <form id="memberForm" style="width: 100%;">
       
       <div class="noir-form-group">
-        <label class="noir-label">01 // NOMBRE COMPLETO</label>
+        <label class="noir-label" for="nombre">01 // NOMBRE COMPLETO</label>
         <input type="text" id="nombre" class="noir-input" placeholder="NOMBRE Y APELLIDO" required autocapitalize="words" />
       </div>
 
       <div class="noir-form-group">
-        <label class="noir-label">02 // FECHA DE NACIMIENTO (DD/MM/AAAA)</label>
+        <label class="noir-label" for="nacimiento">02 // FECHA DE NACIMIENTO (DD/MM/AAAA)</label>
         <input type="tel" id="nacimiento" class="noir-input" placeholder="01/01/2000" maxlength="10" required />
       </div>
 
       <div class="noir-form-group">
-        <label class="noir-label">03 // INSTAGRAM</label>
+        <label class="noir-label" for="instagram">03 // INSTAGRAM</label>
         <input type="text" id="instagram" class="noir-input" placeholder="@USUARIO" required />
       </div>
 
       <div class="noir-form-group">
-        <label class="noir-label">04 // WHATSAPP</label>
+        <label class="noir-label" for="telefono">04 // WHATSAPP</label>
         <input type="tel" id="telefono" class="noir-input" placeholder="387 123 4567" required />
       </div>
 
       <div class="noir-form-group">
-        <label class="noir-label">05 // CORREO ELECTRÓNICO</label>
+        <label class="noir-label" for="email">05 // CORREO ELECTRÓNICO</label>
         <input type="email" id="email" class="noir-input" placeholder="EMAIL@EJEMPLO.COM" required />
       </div>
 
