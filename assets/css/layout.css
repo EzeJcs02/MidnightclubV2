@@ -410,91 +410,78 @@
 }
 
 /* =========================================
-   LOGIN / GATE - BOTTOM SHEET
+   LOGIN / GATE - EDITORIAL BRUTALIST OVERLAY
    ========================================= */
 #mc-login-gate {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 9000;           /* Below top-app-bar so hamburger stays clickable */
+  z-index: 9000; /* Below top-app-bar */
   flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-end;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #000;
   opacity: 0;
   transition: opacity 0.35s ease;
+  overflow-y: auto;
+  padding-top: 5rem; /* Room for the top bar */
 }
-#mc-login-gate.show { opacity: 1; }
+#mc-login-gate.show { opacity: 1; display: flex; }
 #mc-login-gate.show #mc-login-card { transform: translateY(0); }
-
-/* Clicking the dark top area closes the modal */
-#mc-login-gate::before {
-  content: '';
-  flex: 1;
-  cursor: pointer;
-}
 
 #mc-login-card {
   width: 100%;
-  max-width: 100%;
-  background: #0d0d0d;
-  border-top: 1px solid rgba(255,255,255,0.15);
   padding: 0;
   text-align: left;
-  position: relative;
-  border-radius: 0;
-  box-shadow: 0 -20px 60px rgba(0,0,0,0.9);
-  transform: translateY(100%);
+  transform: translateY(20px);
   transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 5rem);
 }
 
 .mc-gate-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.3rem, 5vw, 2rem);
+  font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   line-height: 1;
   color: #fff;
-  padding: 1.8rem 1.5rem 1.2rem;
+  padding: 2rem 1.5rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .mc-gate-input {
   width: 100%;
-  padding: 1.1rem 1.5rem;
+  padding: 3rem 1.5rem 2rem;
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(0.95rem, 3vw, 1.2rem);
-  font-weight: 600;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 700;
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: -0.04em;
+  line-height: 1;
   outline: none;
-  transition: background 0.2s, border-color 0.2s;
-  border-radius: 0;
+  transition: background-color 0.3s;
   display: block;
   -webkit-text-fill-color: #fff;
   caret-color: #fff;
 }
 .mc-gate-input::placeholder {
-  color: rgba(255,255,255,0.25);
-  font-weight: 400;
-  -webkit-text-fill-color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.15);
+  font-weight: 700;
+  -webkit-text-fill-color: rgba(255,255,255,0.15);
 }
 .mc-gate-input:focus {
-  background: rgba(255,255,255,0.03);
-  border-bottom-color: rgba(255,255,255,0.5);
+  background-color: rgba(255,255,255,0.02);
 }
 .mc-gate-input:-webkit-autofill,
 .mc-gate-input:-webkit-autofill:hover,
 .mc-gate-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #000 inset !important;
   -webkit-text-fill-color: #fff !important;
   border-bottom-color: rgba(255,255,255,0.3) !important;
 }
@@ -502,14 +489,14 @@
 .password-group { position: relative; width: 100%; }
 .toggle-password {
   position: absolute;
-  right: 1.2rem;
+  right: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: rgba(255,255,255,0.3);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 2rem;
   padding: 0;
   line-height: 1;
   transition: color 0.2s;
@@ -518,40 +505,38 @@
 
 .mc-gate-btn {
   width: 100%;
-  padding: 1.2rem 1.5rem;
+  padding: 3.5rem 1.5rem;
   background: #fff;
   color: #000;
   border: none;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 900;
-  font-size: 0.95rem;
-  letter-spacing: 0.18em;
-  cursor: pointer;
+  font-size: clamp(2.5rem, 8vw, 6rem);
   text-transform: uppercase;
-  border-radius: 0;
-  text-align: center;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  text-align: left;
   transition: background 0.2s;
   position: relative;
   overflow: hidden;
-  margin-top: 0;
+  margin-top: auto; /* Push to bottom if space available */
 }
 .mc-gate-btn:hover { background: #e5e5e5; }
 .mc-gate-btn:active { background: #ccc; }
-.mc-gate-btn::before { display: none; }
 
 .mc-gate-close {
   width: 100%;
-  padding: 0.85rem 1.5rem;
+  padding: 2rem 1.5rem;
   background: transparent;
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.3);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
   font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   transition: color 0.2s;
 }
 .mc-gate-close:hover { color: #fff; }
@@ -559,32 +544,37 @@
 .mc-link-recovery {
   display: block;
   width: 100%;
-  padding: 0.75rem 1.5rem;
-  text-align: center;
+  padding: 2rem 1.5rem;
+  text-align: left;
   font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.4);
   text-decoration: none;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   transition: color 0.2s;
 }
 .mc-link-recovery:hover { color: #fff; }
 
 .mc-gate-error {
   font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #ff4444;
-  padding: 0.6rem 1.5rem;
+  padding: 1.5rem;
   display: none;
   background: rgba(255,51,51,0.08);
   border-bottom: 1px solid rgba(255,51,51,0.15);
 }
-.gate-view { width: 100%; }
-.hidden-view { display: none; }
+.gate-view { 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  flex: 1; 
+}
+.hidden-view { display: none !important; }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
