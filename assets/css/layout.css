@@ -410,21 +410,21 @@
 }
 
 /* =========================================
-   LOGIN / GATE - EDITORIAL BRUTALISTA
+   LOGIN / GATE - EDITORIAL COMPACT MODAL
    ========================================= */
 #mc-login-gate {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 10000;
-  flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.97);
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.35s ease;
   overflow-y: auto;
 }
 #mc-login-gate.show { opacity: 1; }
@@ -432,42 +432,43 @@
 
 #mc-login-card {
   width: 100%;
-  max-width: 100%;
-  background: transparent;
+  max-width: 480px;
+  background: #0d0d0d;
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 0;
   text-align: left;
   position: relative;
   border-radius: 0;
-  box-shadow: none;
-  transform: translateY(40px);
-  transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+  transform: translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .mc-gate-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.03em;
   line-height: 1;
   color: #fff;
-  padding: 2.5rem 1.5rem 1.5rem;
-  border-bottom: 1px solid #474747;
+  padding: 2rem 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .mc-gate-input {
   width: 100%;
-  padding: 1.5rem 1.5rem;
-  background: #0a0a0a;
+  padding: 1.2rem 1.5rem;
+  background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.2rem, 3.5vw, 2rem);
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   outline: none;
   transition: background 0.2s, border-color 0.2s;
   border-radius: 0;
@@ -476,19 +477,19 @@
   caret-color: #fff;
 }
 .mc-gate-input::placeholder {
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.25);
   font-weight: 400;
-  -webkit-text-fill-color: rgba(255,255,255,0.2);
+  -webkit-text-fill-color: rgba(255,255,255,0.25);
 }
 .mc-gate-input:focus {
-  background: #111;
-  border-bottom-color: #fff;
+  background: rgba(255,255,255,0.03);
+  border-bottom-color: rgba(255,255,255,0.5);
 }
-/* Override browser autofill yellow/white backgrounds */
+/* Override browser autofill backgrounds */
 .mc-gate-input:-webkit-autofill,
 .mc-gate-input:-webkit-autofill:hover,
 .mc-gate-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
   -webkit-text-fill-color: #fff !important;
   border-bottom-color: rgba(255,255,255,0.3) !important;
 }
@@ -496,14 +497,14 @@
 .password-group { position: relative; width: 100%; }
 .toggle-password {
   position: absolute;
-  right: 1.5rem;
+  right: 1.2rem;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: rgba(255,255,255,0.3);
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0;
   line-height: 1;
   transition: color 0.2s;
@@ -512,19 +513,19 @@
 
 .mc-gate-btn {
   width: 100%;
-  padding: 1.8rem 1.5rem;
+  padding: 1.3rem 1.5rem;
   background: #fff;
   color: #000;
   border: none;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 900;
-  font-size: clamp(1.2rem, 3.5vw, 2rem);
-  letter-spacing: 0.05em;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
   cursor: pointer;
   text-transform: uppercase;
   border-radius: 0;
   text-align: center;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s;
   position: relative;
   overflow: hidden;
   margin-top: 0;
@@ -535,10 +536,10 @@
 
 .mc-gate-close {
   width: 100%;
-  padding: 1.2rem 1.5rem;
+  padding: 0.9rem 1.5rem;
   background: transparent;
   border: none;
-  border-top: 1px solid #474747;
+  border-top: 1px solid rgba(255,255,255,0.08);
   color: rgba(255,255,255,0.3);
   font-family: 'Inter', sans-serif;
   font-size: 0.65rem;
@@ -553,7 +554,7 @@
 .mc-link-recovery {
   display: block;
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
   font-size: 0.65rem;
@@ -561,20 +562,21 @@
   text-transform: uppercase;
   color: rgba(255,255,255,0.3);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.07);
   transition: color 0.2s;
 }
 .mc-link-recovery:hover { color: #fff; }
 
 .mc-gate-error {
   font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #ff3333;
-  padding: 0.75rem 1.5rem;
+  color: #ff4444;
+  padding: 0.6rem 1.5rem;
   display: none;
   background: rgba(255,51,51,0.08);
+  border-bottom: 1px solid rgba(255,51,51,0.15);
 }
 .gate-view { width: 100%; }
 .hidden-view { display: none; }
