@@ -275,6 +275,14 @@ export function setupGlobalNav() {
         const overlay = document.getElementById('noirNavOverlay');
         if (overlay) overlay.classList.remove('active');
         document.body.style.overflow = '';
+
+        // 6b. Cerrar el gate de login si había quedado abierto (si no se cierra,
+        // queda tapando la página nueva como si toda la web exigiera ser socio)
+        const loginGate = document.getElementById('mc-login-gate');
+        if (loginGate) {
+          loginGate.classList.remove('show');
+          loginGate.style.display = 'none';
+        }
         
         // 7. Disparar evento para despertar módulos (Supabase)
         window.dispatchEvent(new Event('mc:pageLoaded'));
