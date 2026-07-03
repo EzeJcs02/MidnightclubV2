@@ -257,10 +257,11 @@ export function setupGlobalNav() {
 
         // 6b. Cerrar el gate de login si había quedado abierto (si no se cierra,
         // queda tapando la página nueva como si toda la web exigiera ser socio)
-        const loginGate = document.getElementById('mc-login-gate');
-        if (loginGate) {
-          loginGate.classList.remove('show');
-          loginGate.style.display = 'none';
+        const gate = document.getElementById('mc-login-gate');
+        if (gate && gate.classList.contains('show')) {
+          gate.classList.remove('show');
+          document.body.style.overflow = '';
+          setTimeout(() => { gate.style.display = 'none'; }, 300);
         }
         
         // 7. Disparar evento para despertar módulos (Supabase)
@@ -358,6 +359,7 @@ export function setupAuthUI() {
     if (overlay) overlay.classList.remove('active');
     
     gate.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
     setTimeout(() => gate.classList.add('show'), 10);
     inpId.focus();
   }
@@ -373,6 +375,7 @@ export function setupAuthUI() {
 
   if(btnClose) btnClose.addEventListener('click', () => {
     gate.classList.remove('show'); 
+    document.body.style.overflow = '';
     setTimeout(() => { gate.style.display = 'none'; switchView('login'); }, 300);
   });
 
