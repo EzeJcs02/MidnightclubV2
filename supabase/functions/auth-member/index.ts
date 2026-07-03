@@ -93,6 +93,7 @@ interface LoginRequest {
     email: string;
     telefono: string;
     fecha_nacimiento: string;
+    instagram?: string;
   };
 }
 
@@ -164,6 +165,53 @@ serve(async (req) => {
     );
 
     switch (action) {
+      case "register": {
+        const { user_data } = body;
+        if (!user_data || !user_data.nombre || !user_data.email || !user_data.telefono || !user_data.fecha_nacimiento) {
+          return jsonResponse({ error: "Datos incompletos" }, 400);
+        }
+
+        // Validar duplicados de forma segura (service_role lo permite)
+        const { data: existingEmail } = await supabase
+          .from("members")
+          .select("id")
+          .ilike("email", user_data.email)
+          .maybeSingle();
+
+        if (existingEmail) {
+          return jsonResponse({ error: "Este email ya fue registrado" }, 400);
+        }
+
+        const { data: existingPhone } = await supabase
+          .from("members")
+          .select("id")
+          .eq("telefono", user_data.telefono)
+          .maybeSingle();
+
+        if (existingPhone) {
+          return jsonResponse({ error: "Este número ya fue registrado" }, 400);
+        }
+
+        // Insertar nuevo socio con status pending
+        const { error: insertError } = await supabase
+          .from("members")
+          .insert({
+            nombre: user_data.nombre,
+            email: user_data.email.toLowerCase(),
+            telefono: user_data.telefono,
+            nacimiento: user_data.fecha_nacimiento,
+            instagram: user_data.instagram || null,
+            status: "pending"
+          });
+
+        if (insertError) {
+          console.error("Error en registro:", insertError);
+          return jsonResponse({ error: "Error al guardar los datos" }, 500);
+        }
+
+        return jsonResponse({ success: true }, 200);
+      }
+
       case "login": {
         const { member_id, password } = body;
         if (!member_id || !password) {

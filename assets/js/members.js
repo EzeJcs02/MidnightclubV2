@@ -125,41 +125,28 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Clear draft on success (agregado más abajo en submit handler)
 
-  // Formato Fecha Automático
-  dobInput.addEventListener('input', function(e) {
-    let value = this.value.replace(/\D/g, '');
-    if (value.length > 8) value = value.substring(0, 8);
-    let formatted = '';
-    if (value.length > 0) formatted = value.substring(0, 2);
-    if (value.length >= 3) formatted += '/' + value.substring(2, 4);
-    if (value.length >= 5) formatted += '/' + value.substring(4, 8);
-    this.value = formatted;
-  });
-  dobInput.addEventListener('keydown', function(e) { if (e.key === 'Backspace' && this.value.endsWith('/')) {} });
-  
-  // 4.8: Validación fecha en tiempo real
+  // 4.8: Validación fecha en tiempo real (nativo type="date" devuelve YYYY-MM-DD)
   dobInput.addEventListener('blur', function() {
-    const value = this.value;
+    const value = this.value; // YYYY-MM-DD
     const hint = document.getElementById('nacimiento-hint');
     this.classList.remove('input-error', 'input-success');
     
     if (!value) {
-      if (hint) hint.textContent = 'Formato: DD/MM/AAAA';
+      if (hint) hint.textContent = '';
       return;
     }
     
-    // Validar formato completo
+    // Validar formato YYYY-MM-DD
     if (value.length !== 10) {
       this.classList.add('input-error');
       if (hint) hint.textContent = 'Fecha incompleta';
       return;
     }
     
-    // Validar fecha válida
-    const parts = value.split('/');
-    const day = parseInt(parts[0], 10);
+    const parts = value.split('-');
+    const year = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
+    const day = parseInt(parts[2], 10);
     const date = new Date(year, month - 1, day);
     
     if (date.getDate() !== day || date.getMonth() !== month - 1 || year < 1900 || year > new Date().getFullYear()) {
@@ -181,18 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     this.classList.add('input-success');
-    if (hint) hint.textContent = 'Formato: DD/MM/AAAA';
+    if (hint) hint.textContent = '';
   });
 
   // Enviar a Supabase
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // 1. Validar edad (+18)
+    // 1. Validar edad (+18) con YYYY-MM-DD
     const dobValue = dobInput.value;
     if (dobValue.length !== 10) return;
-    const parts = dobValue.split('/');
-    const birthDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    const parts = dobValue.split('-');
+    const birthDate = new Date(parts[0], parts[1] - 1, parts[2]);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
@@ -204,78 +191,58 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 2. VALIDAR DUPLICADOS
     const emailInput = document.getElementById('email').value.trim().toLowerCase();
     const phoneInput = document.getElementById('telefono').value.trim();
-
-    btnSubmit.disabled = true;
-    btnSubmit.childNodes[2].textContent = " VERIFICANDO...";
-
-    // Check email (case insensitive para seguridad)
-    const { data: emailExists, error: errEmail } = await client
-        .from('members')
-        .select('id')
-        .ilike('email', emailInput)
-        .maybeSingle();
-
-    // Check phone
-    const { data: phoneExists, error: errPhone } = await client
-        .from('members')
-        .select('id')
-        .eq('telefono', phoneInput)
-        .maybeSingle();
-
-    if (errEmail || errPhone) {
-        errorMsg.style.display = 'block';
-        errorMsg.innerText = 'ERROR DE CONEXIÓN AL VERIFICAR DATOS';
-        btnSubmit.disabled = false;
-        btnSubmit.childNodes[2].textContent = "ENVIAR SOLICITUD";
-        return;
-    }
-
-    if (emailExists || phoneExists) {
-        errorMsg.style.display = 'block';
-        errorMsg.innerText = emailExists
-            ? 'ESTE EMAIL YA FUE REGISTRADO'
-            : 'ESTE NÚMERO YA FUE REGISTRADO';
-        btnSubmit.disabled = false;
-        btnSubmit.childNodes[2].textContent = "ENVIAR SOLICITUD";
-        return;
-    }
-
-    // 3. Guardar
-    errorMsg.style.display = 'none';
-    loader.style.display = 'inline-block';
-    btnSubmit.childNodes[2].textContent = " GUARDANDO...";
-    
-    // Normalizar datos finales
     const nombreFinal = document.getElementById('nombre').value.trim();
     const instagramFinal = document.getElementById('instagram').value.trim();
 
-    const { error } = await client
-      .from('members')
-      .insert({
-        nombre: nombreFinal,
-        nacimiento: dobInput.value,
-        instagram: instagramFinal,
-        telefono: phoneInput,
-        email: emailInput
+    btnSubmit.disabled = true;
+    btnSubmit.childNodes[2].textContent = " GUARDANDO...";
+    errorMsg.style.display = 'none';
+    loader.style.display = 'inline-block';
+
+    // 2. Enviar a Edge Function segura
+    try {
+      // Usar authRequest porque apunta al Edge Function "auth-member" 
+      // (Se debe exportar o definir authRequest en members.js o shared-ui.js)
+      const res = await fetch(window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+          ? 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/auth-member' 
+          : 'https://tiaclyamzvcnyqwdcyen.supabase.co/functions/v1/auth-member', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'register',
+          user_data: {
+            nombre: nombreFinal,
+            email: emailInput,
+            telefono: phoneInput,
+            fecha_nacimiento: dobValue, // YYYY-MM-DD
+            instagram: instagramFinal
+          }
+        })
       });
 
-    loader.style.display = 'none';
-    
-    if (error) {
+      const result = await res.json();
+      loader.style.display = 'none';
+
+      if (result.success) {
+        localStorage.removeItem('mco_member_draft');
+        form.style.display = 'none';
+        successMsg.style.display = 'block';
+        setTimeout(() => { window.location.href = 'success.html'; }, 1500);
+      } else {
+        errorMsg.style.display = 'block';
+        errorMsg.innerText = result.error || 'ERROR DE CONEXIÓN - INTENTA NUEVAMENTE';
+        btnSubmit.disabled = false;
+        btnSubmit.childNodes[2].textContent = "ENVIAR SOLICITUD";
+      }
+    } catch (error) {
       console.error(error);
+      loader.style.display = 'none';
       errorMsg.style.display = 'block';
-      errorMsg.innerText = 'ERROR DE CONEXIÓN - INTENTA NUEVAMENTE';
+      errorMsg.innerText = 'ERROR DE RED - INTENTA NUEVAMENTE';
       btnSubmit.disabled = false;
       btnSubmit.childNodes[2].textContent = "ENVIAR SOLICITUD";
-    } else {
-      // Éxito - limpiar draft
-      localStorage.removeItem('mco_member_draft');
-      form.style.display = 'none';
-      successMsg.style.display = 'block';
-      setTimeout(() => { window.location.href = 'success.html'; }, 1500);
     }
   });
 });
