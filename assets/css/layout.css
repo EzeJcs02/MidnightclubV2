@@ -950,14 +950,19 @@
   navigation: auto;
 }
 body {
-  animation: cinematicFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: cinematicFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* El 100% de fadeIn y el 0% de fadeOut no llevan transform a propósito:
+   con "animation-fill-mode: forwards" en <body>, cualquier transform que
+   quede activo al terminar la animación convierte a <body> en containing
+   block de sus hijos "position: fixed" (login gate, nav, banners), que
+   dejan de posicionarse contra el viewport real. */
 @keyframes cinematicFadeIn {
   0% { opacity: 0; filter: blur(10px); transform: scale(1.02); }
-  100% { opacity: 1; filter: blur(0); transform: scale(1); }
+  100% { opacity: 1; filter: blur(0); }
 }
 @keyframes cinematicFadeOut {
-  0% { opacity: 1; filter: blur(0); transform: scale(1); }
+  0% { opacity: 1; filter: blur(0); }
   100% { opacity: 0; filter: blur(10px); transform: scale(0.98); }
 }
 

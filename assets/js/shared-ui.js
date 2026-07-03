@@ -127,6 +127,20 @@ const SPOTIFY_HTML = `
   </div>
 `;
 
+const INSTALL_BANNER_HTML = `
+  <div id="mc-install-banner" class="mc-install-banner" role="dialog" aria-label="Agregar a inicio">
+    <div class="mc-install-icon"><img src="assets/images/icon-192.png" alt="" width="48" height="48" /></div>
+    <div class="mc-install-text">
+      <div class="mc-install-title">Agregá Midnight Club a tu inicio</div>
+      <div class="mc-install-sub" id="mc-install-sub"></div>
+    </div>
+    <button id="mc-install-cta" class="mc-install-cta" type="button" style="display:none;">Instalar</button>
+    <button id="mc-install-close" class="mc-install-close" type="button" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+`;
+
 function injectGlobalNav() {
   if (!document.getElementById('noirNavOverlay')) {
     document.body.insertAdjacentHTML('beforeend', GLOBAL_NAV_HTML);
@@ -289,7 +303,11 @@ export function setupGlobalNav() {
         
         // 8. Transición de entrada
         document.body.style.animation = 'cinematicFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-        
+        // "forwards" deja el transform del último keyframe pegado en <body>,
+        // lo que rompe el "position: fixed" de todo lo que se agrega después
+        // (login gate, banners). Se limpia apenas termina la animación.
+        setTimeout(() => { document.body.style.animation = ''; }, 600);
+
         // Scroll top
         window.scrollTo(0, 0);
       }, 400);
@@ -725,9 +743,103 @@ export async function initCountdown() {
   }
 }
 
+/**
+ * Banner de "Agregar a inicio" (PWA). Funciona en Android/Desktop (Chrome/Edge,
+ * vía beforeinstallprompt) y en iOS Safari (que no tiene esa API: se muestran
+ * instrucciones manuales para "Compartir → Agregar a inicio").
+ */
+const INSTALL_DISMISS_KEY = 'mc_install_dismissed_at';
+const INSTALL_DISMISS_DAYS = 14;
+
+function isStandaloneApp() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIOSDevice() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+export function setupInstallPrompt() {
+  if (isStandaloneApp()) return;
+  if (window._mcInstallPromptBound) return;
+  window._mcInstallPromptBound = true;
+
+  const dismissedAt = Number(localStorage.getItem(INSTALL_DISMISS_KEY) || 0);
+  if (dismissedAt && Date.now() - dismissedAt < INSTALL_DISMISS_DAYS * 24 * 60 * 60 * 1000) return;
+
+  // Registrar manifest, ícono iOS y service worker en cualquier página, no solo index.html
+  if (!document.querySelector('link[rel="manifest"]')) {
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = 'manifest.json';
+    document.head.appendChild(link);
+  }
+  if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+    const appleIcon = document.createElement('link');
+    appleIcon.rel = 'apple-touch-icon';
+    appleIcon.href = 'assets/images/icon-192.png';
+    document.head.appendChild(appleIcon);
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  const ios = isIOSDevice();
+  let deferredPrompt = null;
+
+  function dismiss() {
+    const banner = document.getElementById('mc-install-banner');
+    if (banner) {
+      banner.classList.remove('show');
+      setTimeout(() => banner.remove(), 300);
+    }
+    localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now()));
+  }
+
+  function showBanner() {
+    if (document.getElementById('mc-install-banner') || isStandaloneApp()) return;
+    document.body.insertAdjacentHTML('beforeend', INSTALL_BANNER_HTML);
+
+    const sub = document.getElementById('mc-install-sub');
+    const cta = document.getElementById('mc-install-cta');
+
+    if (ios) {
+      sub.innerHTML = 'Tocá <strong>Compartir</strong> &rarr; "Agregar a inicio"';
+    } else {
+      sub.textContent = 'Acceso rápido, funciona sin conexión';
+      cta.style.display = 'inline-block';
+      cta.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        dismiss();
+      });
+    }
+
+    document.getElementById('mc-install-close').addEventListener('click', dismiss);
+    requestAnimationFrame(() => {
+      document.getElementById('mc-install-banner')?.classList.add('show');
+    });
+  }
+
+  if (ios) {
+    // Safari no dispara beforeinstallprompt: mostramos las instrucciones directamente
+    setTimeout(showBanner, 2500);
+  } else {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      setTimeout(showBanner, 1500);
+    });
+  }
+}
+
 // Auto-initialize global navigation and SPA router on all pages
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupGlobalNav);
+  document.addEventListener('DOMContentLoaded', () => { setupGlobalNav(); setupInstallPrompt(); });
 } else {
   setupGlobalNav();
+  setupInstallPrompt();
 }

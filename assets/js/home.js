@@ -39,26 +39,6 @@ function initHome() {
     loadDynamicHero();
     setupAuthUI();
     loadNextEvent();
-    
-    // PWA Install Button Re-bind
-    const installBtn = document.getElementById('btnInstallApp');
-    if (installBtn && !installBtn.dataset.bound) {
-        installBtn.dataset.bound = "true";
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); 
-            window.deferredPrompt = e; 
-            installBtn.style.display = 'block';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (window.deferredPrompt) {
-                window.deferredPrompt.prompt();
-                const { outcome } = await window.deferredPrompt.userChoice;
-                if (outcome === 'accepted') { installBtn.style.display = 'none'; }
-                window.deferredPrompt = null;
-            }
-        });
-    }
 }
 
 if (document.readyState === 'loading') {
@@ -68,8 +48,3 @@ if (document.readyState === 'loading') {
 }
 
 window.addEventListener('mc:pageLoaded', initHome);
-
-// === LÓGICA PWA (Instalar App) ===
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
-}
