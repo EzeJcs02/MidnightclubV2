@@ -108,9 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
         resultTitle.textContent = '✅ VÁLIDO';
         resultMsg.textContent = data.message;
         
-        if (data.ticket && data.ticket.events && data.ticket.members) {
+        if (data.ticket && data.ticket.events) {
+          const name = data.ticket.members ? data.ticket.members.nombre : data.ticket.customer_name;
           tiEvent.textContent = data.ticket.events.title;
-          tiMember.textContent = data.ticket.members.nombre;
+          tiMember.textContent = name || '-';
           ticketInfo.style.display = 'block';
         }
       } else {
@@ -126,9 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
           pinInput.value = '';
         }
 
-        if (data.ticket && data.ticket.events && data.ticket.members) {
+        if (data.ticket && data.ticket.events) {
+          const name = data.ticket.members ? data.ticket.members.nombre : data.ticket.customer_name;
           tiEvent.textContent = data.ticket.events.title;
-          tiMember.textContent = data.ticket.members.nombre;
+          tiMember.textContent = name || '-';
           ticketInfo.style.display = 'block';
         }
       }

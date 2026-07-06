@@ -167,48 +167,100 @@ serve(async (req) => {
     // Route: Validate a ticket (For Scanner Panel)
     if (action === "validate_ticket") {
       const { qr_code, pin } = body;
-      
+
+      const logScan = (entry: { ticketType: string; eventId: string | null; result: "accepted" | "rejected"; reason?: string }) => {
+        supabase.from("ticket_scans").insert({
+          qr_code: qr_code || null,
+          ticket_type: entry.ticketType,
+          event_id: entry.eventId,
+          result: entry.result,
+          reason: entry.reason || null,
+        }).then(({ error }) => { if (error) console.error("scan log error:", error); });
+      };
+
       // Simple security for the scanner panel (PIN code)
       if (pin !== SCANNER_PIN) {
+        logScan({ ticketType: "unknown", eventId: null, result: "rejected", reason: "pin incorrecto" });
         throw new Error("PIN de seguridad incorrecto");
       }
       if (!qr_code) throw new Error("Falta el código QR");
 
-      // Buscar el ticket
+      // Buscar el ticket (primero como entrada de socio, después como entrada paga)
       const { data: ticket, error: errFind } = await supabase
         .from("member_tickets")
         .select("*, events(title), members(nombre)")
         .eq("qr_code", qr_code)
-        .single();
+        .maybeSingle();
 
-      if (errFind || !ticket) {
+      if (ticket) {
+        if (ticket.status === "used") {
+          logScan({ ticketType: "member", eventId: ticket.event_id, result: "rejected", reason: "ya usada" });
+          return new Response(
+            JSON.stringify({ success: false, error: "ESTA ENTRADA YA FUE USADA", ticket }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        if (ticket.status !== "valid") {
+          logScan({ ticketType: "member", eventId: ticket.event_id, result: "rejected", reason: "no válida" });
+          return new Response(
+            JSON.stringify({ success: false, error: "ESTA ENTRADA NO ES VÁLIDA", ticket }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        const { error: errUpdate } = await supabase
+          .from("member_tickets")
+          .update({ status: "used" })
+          .eq("id", ticket.id);
+
+        if (errUpdate) throw errUpdate;
+
+        logScan({ ticketType: "member", eventId: ticket.event_id, result: "accepted" });
+        return new Response(
+          JSON.stringify({ success: true, message: "ENTRADA VÁLIDA", ticket }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // No es entrada de socio: probar como entrada paga
+      const { data: paidTicket, error: errFindPaid } = await supabase
+        .from("paid_tickets")
+        .select("*, events(title)")
+        .eq("qr_code", qr_code)
+        .maybeSingle();
+
+      if (!paidTicket) {
+        logScan({ ticketType: "unknown", eventId: null, result: "rejected", reason: "código no encontrado" });
         throw new Error("CÓDIGO INVÁLIDO O NO ENCONTRADO");
       }
 
-      if (ticket.status === "used") {
+      if (paidTicket.status === "used") {
+        logScan({ ticketType: "paid", eventId: paidTicket.event_id, result: "rejected", reason: "ya usada" });
         return new Response(
-          JSON.stringify({ success: false, error: "ESTA ENTRADA YA FUE USADA", ticket }),
+          JSON.stringify({ success: false, error: "ESTA ENTRADA YA FUE USADA", ticket: paidTicket }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
-      if (ticket.status !== "valid") {
+      if (paidTicket.status !== "valid") {
+        logScan({ ticketType: "paid", eventId: paidTicket.event_id, result: "rejected", reason: "no válida" });
         return new Response(
-          JSON.stringify({ success: false, error: "ESTA ENTRADA NO ES VÁLIDA", ticket }),
+          JSON.stringify({ success: false, error: "ESTA ENTRADA NO ES VÁLIDA", ticket: paidTicket }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
-      // Marcar como usado
-      const { error: errUpdate } = await supabase
-        .from("member_tickets")
+      const { error: errUpdatePaid } = await supabase
+        .from("paid_tickets")
         .update({ status: "used" })
-        .eq("id", ticket.id);
+        .eq("id", paidTicket.id);
 
-      if (errUpdate) throw errUpdate;
+      if (errUpdatePaid) throw errUpdatePaid;
 
+      logScan({ ticketType: "paid", eventId: paidTicket.event_id, result: "accepted" });
       return new Response(
-        JSON.stringify({ success: true, message: "ENTRADA VÁLIDA", ticket }),
+        JSON.stringify({ success: true, message: "ENTRADA VÁLIDA", ticket: paidTicket }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

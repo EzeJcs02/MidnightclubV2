@@ -176,17 +176,17 @@ serve(async (req) => {
       const { count: qrPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).gte("created_at", startStr).lt("created_at", endStr);
       const { count: qrMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).gte("created_at", startStr).lt("created_at", endStr);
       
-      const { count: ingresosEscaneadosMembers } = await supabase.from("member_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startStr).lt("created_at", endStr);
-      const { count: ingresosEscaneadosPagos } = await supabase.from("paid_tickets").select("*", { count: "exact", head: true }).eq("status", "used").gte("created_at", startStr).lt("created_at", endStr);
-      
+      const { count: ingresosEscaneados } = await supabase.from("ticket_scans").select("*", { count: "exact", head: true }).eq("result", "accepted").gte("scanned_at", startStr).lt("scanned_at", endStr);
+      const { count: ingresosRechazados } = await supabase.from("ticket_scans").select("*", { count: "exact", head: true }).eq("result", "rejected").gte("scanned_at", startStr).lt("scanned_at", endStr);
+
       return new Response(
         JSON.stringify({
           success: true,
           stats: {
             qrPagos: qrPagos || 0,
             qrMembers: qrMembers || 0,
-            ingresosEscaneados: (ingresosEscaneadosMembers || 0) + (ingresosEscaneadosPagos || 0),
-            ingresosRechazados: 0 // No backend table for rejected scans yet
+            ingresosEscaneados: ingresosEscaneados || 0,
+            ingresosRechazados: ingresosRechazados || 0
           }
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
